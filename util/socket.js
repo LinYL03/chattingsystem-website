@@ -9,7 +9,7 @@ module.exports = function (io) {
       if (user) {
         //表示用户存在,登录失败，服务器需要给当前用户响应，告诉登录失败
         socket.emit("userExit", {
-          msg: "该用户已登录聊天室，登录失败"
+          msg: "登录聊天室失败"
         })
       } else {
         data.sid = socket.id;
