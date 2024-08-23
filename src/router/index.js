@@ -155,7 +155,7 @@ const routes = [
     }
   },
   {
-    path: '/chatting',
+    path: '/chat',
     component: Chatting,
     meta: {
       requireAuth: true  // 聊天室需要登录
@@ -163,8 +163,17 @@ const routes = [
   },
   {
     // 调试新的聊天室页面的路由
-    path: '/chat',
+    path: '/chattingnew',
     component: ChattingRoomNew,
+    props: {
+      user: {
+        "id": 3,
+        "username": "root",
+        "avatar": "http://localhost:4000/public/images/avatar/1617424043992u=2409086564,4092922119&fm=26&gp=0.jpg",
+        "sid": "IPOUxRcosOKYxXQ9AAAP",
+        "msg": "登录聊天室成功"
+      }
+    },
     meta: {
       requireAuth: true  // 聊天室需要登录
     }

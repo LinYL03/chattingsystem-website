@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import Room from "./ChatRoom";
+import Room from "./ChattingRoomNew";
 //引入socket.io-client
 import io from "socket.io-client";
 export default {
