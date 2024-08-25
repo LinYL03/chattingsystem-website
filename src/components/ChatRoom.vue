@@ -23,8 +23,7 @@
           :class="active === index ? 'active-user' : ''"
           @click="chooseUser(item, index)"
           v-for="(item, index) in userList"
-          :key="index"
-        >
+          :key="index">
           <img :src="item.avatar" alt="" />
           <span>{{ item.username }}</span>
         </div>

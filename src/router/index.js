@@ -21,6 +21,7 @@ import Cartoon from '../components/MusicPhoto/Cartoon.vue'
 import Beauty from '../components/MusicPhoto/Beauty.vue'
 import Pets from '../components/MusicPhoto/Pets.vue'
 import ChattingRoomNew from '../components/ChattingRoomNew.vue'
+// import ChatRoom from '../components/ChatRoom.vue'
 
 //解决vue重复点击路由报错
 const originalPush = Router.prototype.push
@@ -157,23 +158,6 @@ const routes = [
   {
     path: '/chat',
     component: Chatting,
-    meta: {
-      requireAuth: true  // 聊天室需要登录
-    }
-  },
-  {
-    // 调试新的聊天室页面的路由
-    path: '/chattingnew',
-    component: ChattingRoomNew,
-    props: {
-      user: {
-        "id": 3,
-        "username": "root",
-        "avatar": "http://localhost:4000/public/images/avatar/1617424043992u=2409086564,4092922119&fm=26&gp=0.jpg",
-        "sid": "IPOUxRcosOKYxXQ9AAAP",
-        "msg": "登录聊天室成功"
-      }
-    },
     meta: {
       requireAuth: true  // 聊天室需要登录
     }

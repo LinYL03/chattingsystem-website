@@ -1,15 +1,25 @@
 <template>
-  <div>
-    <el-card class="chatBox" :body-style="{ padding: '0px' }">
-      <!-- <div class="loginChat" v-if="!isEnter">
-        <img :src="avatar" alt="" />
-        <span>{{ username }}</span>
-        <button @click="loginChat">进入聊天室</button>
-      </div>
-      <room v-else :user="user" :userList="userList" ref="chatroom" @sendServer="sendServer" @handleFile="handleFile" @activeSid="activeSid" /> -->
-      <room v-if="isEnter" :user="user" :userList="userList" ref="chatroom" @sendServer="sendServer" @handleFile="handleFile" @activeSid="activeSid" />
-    </el-card>
-    <div class="avatar">
+  <div class="body">
+    <div class="chatBox">
+      <room
+      :user="user"
+      :userList="userList"
+      ref="chatroom"
+      @sendServer="sendServer"
+      @handleFile="handleFile"
+      @activeSid="activeSid" />
+    </div>
+    <!-- <div>1234565</div> -->
+    <!-- <div class="null">
+      <room2
+      :user="user"
+      :userList="userList"
+      ref="chatroom"
+      @sendServer="sendServer"
+      @handleFile="handleFile"
+      @activeSid="activeSid" />
+    </div> -->
+    <!-- <div class="avatar">
       <el-avatar :size="70" :src="avatar" @click.native="UserInfo1"></el-avatar>
       <div class="UserInfo">
         <ul>
@@ -31,16 +41,19 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import Room from "./ChattingRoomNew";
-//引入socket.io-client
+import Room2 from "./Null";
+// import Room from "./ChatRoom";
+// 引入socket.io-client
 import io from "socket.io-client";
 export default {
   components: { Room },
+  // components: { Room, Room2 },
   data() {
     return {
       username: "",
@@ -164,25 +177,52 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.body {
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/picture/房子.gif');
+  background-size: cover; /* 设置为cover，以保持宽高比并覆盖整个屏幕 */
+  background-repeat: no-repeat; /* 禁止背景图重复 */
+  background-attachment: fixed; /* 固定背景图，使其在滚动时保持固定 */
+  object-fit: cover;
+
+  // // 水平垂直对齐
+  display: flex;             /* 设置为 Flexbox 布局 */
+  justify-content: center;   /* 水平居中 */
+  align-items: center;       /* 垂直居中 */
+
+  // background: #000;
+  // 上下排列
+  // display: flex;
+  // flex-direction: column; /* 垂直方向排列 */
+  // align-items: center;
+}
+
+// .null {
+//   width: 952px;
+//   height: 588px;
+// }
+
 .chatBox {
   position: relative;
-  width: 900px;
-  height: 550px;
+  width: 1200px;
+  height: 588px;
   margin: 0 auto;
-  margin-top: 40px;
   border: none;
+
+  // background: #eee;
 }
+
 .loginChat {
   width: 900px;
   height: 550px;
-  background-image: linear-gradient(
-    to right top,
-    #a98fb3,
-    #a08fb9,
-    #9490bd,
-    #8691c1,
-    #7593c4
-  );
+  background-image: linear-gradient(to right top,
+      #a98fb3,
+      #a08fb9,
+      #9490bd,
+      #8691c1,
+      #7593c4);
+
   img {
     width: 180px;
     height: 180px;
@@ -191,6 +231,7 @@ export default {
     left: 50%;
     transform: translateX(-50%);
   }
+
   span {
     position: absolute;
     display: block;
@@ -200,6 +241,7 @@ export default {
     top: 300px;
     color: yellow;
   }
+
   button {
     width: 135px;
     height: 47px;
@@ -216,9 +258,11 @@ export default {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   }
 }
+
 // 头像
 .avatar {
   position: relative;
+
   .el-avatar {
     border: 2px #eee solid;
     z-index: 999;
@@ -227,20 +271,25 @@ export default {
     cursor: pointer;
   }
 }
-.el-avatar:hover + .UserInfo {
+
+.el-avatar:hover+.UserInfo {
   animation: show 0.7s forwards;
 }
+
 .UserInfo:hover {
   height: 300px;
 }
+
 @keyframes show {
   0% {
     height: 0;
   }
+
   100% {
     height: 300px;
   }
 }
+
 .UserInfo {
   position: absolute;
   left: -50px;
@@ -252,6 +301,7 @@ export default {
   border-radius: 5px;
   background-color: #fff;
   z-index: 99;
+
   ul {
     width: 100%;
     height: 100%;
@@ -261,6 +311,7 @@ export default {
     margin: 0;
     padding: 0;
     list-style: none;
+
     li {
       font-size: 16px;
       border-top: 1px #eee solid;
@@ -269,13 +320,16 @@ export default {
       color: purple;
       width: 100%;
       cursor: pointer;
+
       i {
         margin-right: 8px;
       }
+
       span {
         display: block;
         cursor: auto;
       }
+
       .loginName {
         font-size: 24px;
         color: orange;
