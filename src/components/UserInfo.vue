@@ -1,17 +1,18 @@
 <template>
   <div class="userinfo">
     <el-card>
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-      >
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <el-menu-item index="1">个人资料</el-menu-item>
         <el-menu-item index="2">账号安全</el-menu-item>
-        <el-menu-item index="3">我的消息</el-menu-item>
+        <!-- <el-menu-item index="3">我的消息</el-menu-item> -->
+
+        <el-button type="info" plain class="back" @click="handleBack">
+          <img src="../assets/img/返回.png" class="imgback">
+        </el-button>
       </el-menu>
+
       <router-view></router-view>
+
     </el-card>
   </div>
 </template>
@@ -46,13 +47,13 @@ export default {
             this.$router.push("/userinfo/2");
           }
           break;
-        case "3":
-          if (this.activeIndex == "3") {
-            return;
-          } else {
-            this.$router.push("/userinfo/3");
-          }
-          break;
+        // case "3":
+        //   if (this.activeIndex == "3") {
+        //     return;
+        //   } else {
+        //     this.$router.push("/userinfo/3");
+        //   }
+        //   break;
       }
     },
     getRoutePath() {
@@ -61,9 +62,13 @@ export default {
         this.activeIndex = "1";
       } else if (path === "/userinfo/2") {
         this.activeIndex = "2";
-      } else if (path === "/userinfo/3") {
-        this.activeIndex = "3";
       }
+      // else if (path === "/userinfo/3") {
+      //   this.activeIndex = "3";
+      // }
+    },
+    handleBack() {
+      this.$router.push("/chat");
     },
   },
 };
@@ -73,17 +78,31 @@ export default {
 .userinfo {
   padding-bottom: 20px;
 }
+
 .el-card {
   height: 100%;
   width: 75%;
   margin: 0 auto;
   margin-top: 20px;
   position: relative;
+
   .el-menu-demo {
     margin-bottom: 30px;
+
     .el-menu-item {
       font-size: 16px;
     }
   }
+}
+
+.back {
+  margin-left: 800px;
+  margin-top: 12px;
+  padding: 4px 17px 4px 15px;
+    
+}
+.imgback{
+  width: 30px;
+  height: 25px;
 }
 </style>

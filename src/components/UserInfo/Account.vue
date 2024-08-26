@@ -14,6 +14,7 @@
               prefix-icon="iconfont icon-youxiang1"
               v-model="emailForm.email"
               @blur="checkEmail"
+              class="elinput"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -232,5 +233,14 @@ export default {
 }
 .el-alert {
   margin-bottom: 20px;
+}
+.el-form{
+  margin:0 250px 0 250px;
+}
+h1{
+  text-align: center;
+}
+.el-button{
+margin-left:440px;
 }
 </style>

@@ -3,51 +3,35 @@
     <div class="userContainer">
       <div class="avatarContainer">
         <el-avatar :src="avatar" :size="170"></el-avatar>
-        <el-upload
-          class="avatar-uploader"
-          :action="$apiServer + 'upload?type=1'"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeuploadButton"
-          :limit="1"
-        >
-          <img v-if="isUpload" :src="preAvatar" class="avatarImg" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-        <el-button type="primary" class="uploadButton" @click="uploadAvatar"
-          >更换头像</el-button
-        >
+        <div class="signature">个性签名：{{ userInfoForm.signature }}</div> <!-- 个性签名展示 -->
       </div>
       <div class="userInfoContainer">
-        <el-form
-          label-position="top"
-          :model="userInfoForm"
-          ref="userInfoFormRef"
-        >
+        <el-form label-position="top" :model="userInfoForm" ref="userInfoFormRef">
           <el-form-item label="用户名">
-            <el-input v-model="userInfoForm.username" disabled></el-input>
+            <el-input v-model="userInfoForm.username" :disabled="!isEditing"></el-input>
           </el-form-item>
           <el-form-item label="个性签名">
-            <el-input
-              v-model="userInfoForm.signature"
-              prefix-icon="iconfont icon-qianming"
-            ></el-input>
+            <el-input v-model="userInfoForm.signature" prefix-icon="iconfont icon-qianming"
+              :disabled="!isEditing"></el-input>
           </el-form-item>
           <el-form-item label="性别">
-            <el-radio :label="1" v-model="userInfoForm.sex">男</el-radio>
-            <el-radio :label="2" v-model="userInfoForm.sex">女</el-radio>
+            <el-radio :label="1" v-model="userInfoForm.sex" :disabled="!isEditing">男</el-radio>
+            <el-radio :label="2" v-model="userInfoForm.sex" :disabled="!isEditing">女</el-radio>
           </el-form-item>
           <el-form-item label="生日">
-            <el-date-picker
-              type="date"
-              v-model="userInfoForm.birthday"
-              style="width: 100%"
-            ></el-date-picker>
+            <el-date-picker type="date" v-model="userInfoForm.birthday" style="width: 100%"
+              :disabled="!isEditing"></el-date-picker>
           </el-form-item>
         </el-form>
-        <el-button type="primary" class="userInfoButton" @click="updateUserInfo"
-          >保存</el-button
-        >
+        <div class="buttonGroup">
+          <el-button type="primary" class="uploadButton" @click="triggerUpload">
+            更新头像
+          </el-button>
+          <el-button type="primary" class="userInfoButton" @click="toggleEdit">
+            {{ isEditing ? '保存' : '修改编辑' }}
+          </el-button>
+        </div>
+        <input ref="fileInput" type="file" accept="image/*" style="display: none" @change="handleFileChange" />
       </div>
     </div>
   </div>
@@ -62,6 +46,7 @@ export default {
       isUpload: false,
       tempUrl: "",
       userInfoForm: {},
+      isEditing: false, // 是否处于编辑状态
     };
   },
   mounted() {
@@ -71,44 +56,49 @@ export default {
     this.userInfoForm = userInfo;
   },
   methods: {
-    beforeuploadButton(file) {
+    triggerUpload() {
+      this.$refs.fileInput.click(); // 触发文件选择框
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
       const isJPG1 = file.type === "image/jpeg";
       const isJPG2 = file.type === "image/jpg";
       const isJPG3 = file.type === "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG1 && !isJPG2 && !isJPG3) {
         this.$message.error("上传头像图片只能是 JPG 或 PNG 格式!");
+        return;
       }
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 2MB!");
+        return;
       }
-      return (isJPG1 || isJPG2 || isJPG3) && isLt2M;
+
+      this.uploadAvatar(file);
     },
-    handleAvatarSuccess(res, file) {
-      this.isUpload = true;
-      this.preAvatar = URL.createObjectURL(file.raw);
-      this.tempUrl = res;
-    },
-    async uploadAvatar() {
-      if (!this.isUpload) {
-        return this.$message.warning("请先选择要更换的头像!");
-      }
-      const { data: res } = await this.$http.post("user/update/avatar", {
-        id: this.userInfoForm.id,
-        imgUrl: this.tempUrl,
-      });
+    async uploadAvatar(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const { data: res } = await this.$http.post(this.$apiServer + 'upload?type=1', formData);
+
       if (res.code !== 200) {
         return this.$message.error(res.msg);
       }
+
       this.$message.success(res.msg);
       this.avatar = res.url;
-      this.isUpload = false;
       this.userInfoForm.avatar = this.avatar;
       this.$store.commit("setAvatar", this.avatar);
-      window.sessionStorage.setItem(
-        "userInfo",
-        JSON.stringify(this.userInfoForm)
-      );
+      window.sessionStorage.setItem("userInfo", JSON.stringify(this.userInfoForm));
+    },
+    toggleEdit() {
+      if (this.isEditing) {
+        this.updateUserInfo();
+      }
+      this.isEditing = !this.isEditing;
     },
     updateUserInfo() {
       this.$refs.userInfoFormRef.validate(async (valid) => {
@@ -138,45 +128,42 @@ export default {
   display: flex;
   justify-content: space-around;
 }
+
 .avatarContainer {
   width: 170px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-left: 100px;
 }
+
 .el-avatar {
   margin: 0 auto;
   margin: 40px 0;
 }
-.avatar-uploader {
-  border: 1px dashed rgb(206, 206, 206);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 170px;
-  height: 170px;
-  line-height: 170px;
+
+.signature {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666;
   text-align: center;
+  font-weight: 700;
 }
-.avatarImg {
-  width: 170px;
-  height: 170px;
-  display: block;
-}
-.uploadButton {
-  text-align: center;
-  margin: 30px auto;
-}
+
 .userInfoContainer {
   width: 100%;
   margin: 30px 120px;
+}
+
+.buttonGroup {
+    display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      align-items: center;
+}
+
+.uploadButton,
+.userInfoButton {
+  width: 18%;
 }
 </style>
