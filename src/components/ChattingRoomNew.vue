@@ -2,7 +2,10 @@
     <div class="chatRoom" ref="room">
         <div class="chatBox">
             <div class="boxLeft">
-                <div class="leftTop"><span>#网络即时通讯</span></div>
+                <div class="leftTop">
+                    <div class="avatar" @click="userinfo"><img :src="user.avatar" alt=""></div>
+                    <div class="username"><span>{{ user.username }}</span></div>
+                </div>
                 <div class="leftDown">
                     <span>聊天列表</span>
                     <div class="group" @click="chooseGroup" :class="{'active-user': isGroup}">
@@ -11,6 +14,7 @@
                     </div>
                     <span>当前在线用户</span>
                     <div class="ungroup">
+                        <div class="nousers" v-if="userList.length === 1"><span>没有其他用户</span></div>
                         <div class="userBox" v-for="(item, index) in userList" :key="index" v-if="item.username !== user.username" @click="chooseUser(item, index)" :class="{'active-user': activeElement === index && isGroup === false}">
                             <div class="avatar"><img :src="item.avatar" alt=""></div>
                             <div class="username"><span>{{ item.username }}</span></div>
@@ -97,6 +101,7 @@ export default {
     },
     computed: {
         userListLength() {
+            // console.log(this.userList);
             return this.userList.length;
         },
     },
@@ -105,6 +110,7 @@ export default {
         this.userList.forEach((val, i) => {
             this.oneContent[i] = [];
         });
+        // console.log(userList);
     },
     updated() {
         // 聊天定位到底部
@@ -270,6 +276,10 @@ export default {
                 this.$emit("activeSid", user.sid);
             }
         },
+        userinfo() {
+            this.$router.push("/userinfo/1");
+            console.log("跳转到用户信息界面");
+        }
     },
 };
 </script>
@@ -328,9 +338,33 @@ export default {
 }
 
 .leftTop {
-    margin-left: 10px;
-    font-size: 18px;
-    color: var(--font-color);
+    // background: #fff;
+    /* 垂直居中 */
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    .avatar {
+        height: 42px;
+        width: 42px;
+
+        cursor: pointer;
+        margin-left: calc((var(--top-height) - 42px) / 2);
+        margin-right: calc((var(--top-height) - 42px) / 2);
+        // background: #000;
+        img {
+            height: 42px;
+            width: 42px;
+            border-radius: 50%;
+        }
+    }
+
+    .username {
+        // background: #000;
+        span {
+            font-size: 20px;
+            color: #fff;
+        }
+    }
 }
 
 .leftDown {
@@ -430,6 +464,23 @@ export default {
     /* 移除最后一个元素的底部间距，保持整体样式一致 */
     .userBox:last-child {
         margin-bottom: 0;
+    }
+
+    .nousers {
+        background: var(--secondary-dark-color);
+        height: var(--top-height);
+        /* 水平垂直居中 */
+        /* 设置为 Flexbox 布局 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        // margin-bottom: 10px;
+        border-radius: 10px;
+        span {
+            color: #fff;
+            font-size: 20px
+        }
     }
 }
 
