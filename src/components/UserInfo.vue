@@ -6,9 +6,9 @@
         <el-menu-item index="2">账号安全</el-menu-item>
         <!-- <el-menu-item index="3">我的消息</el-menu-item> -->
 
-        <el-button type="info" plain class="back" @click="handleBack">
-          <img src="../assets/img/返回.png" class="imgback">
-        </el-button>
+        <!-- <el-button type="info" plain class="back"> -->
+        <img src="../assets/img/返回.png" class="back imgback" @click="handleBack">
+        <!-- </el-button> -->
       </el-menu>
 
       <router-view></router-view>

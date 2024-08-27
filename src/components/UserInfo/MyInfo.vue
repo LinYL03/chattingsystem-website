@@ -3,7 +3,8 @@
     <div class="userContainer">
       <div class="avatarContainer">
         <el-avatar :src="avatar" :size="170"></el-avatar>
-        <div class="signature">个性签名：{{ userInfoForm.signature }}</div> <!-- 个性签名展示 -->
+        <div class="signature"><span>个性签名：</span>
+          {{ userInfoForm.signature }}</div> <!-- 个性签名展示 -->
       </div>
       <div class="userInfoContainer">
         <el-form label-position="top" :model="userInfoForm" ref="userInfoFormRef">
@@ -134,7 +135,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 100px;
+      margin: 80px;
 }
 
 .el-avatar {
@@ -144,10 +145,14 @@ export default {
 
 .signature {
   margin-bottom: 20px;
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   text-align: center;
+  font-weight: 500;
+  span{
+  font-size: 16px;
   font-weight: 700;
+  }
 }
 
 .userInfoContainer {
