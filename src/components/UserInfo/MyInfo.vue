@@ -132,6 +132,7 @@ export default {
   display: flex;
   justify-content: space-around;
 }
+
 .el-avatar {
   margin: 0 auto;
   margin: 40px 0;
@@ -200,7 +201,7 @@ export default {
 .buttonGroup {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 55px;
   align-items: center;
 }
 
