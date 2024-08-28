@@ -59,7 +59,7 @@ export default {
 .userinfo {
   width: 100%;
   height: 96.2%;
-  background-image: url('../assets/picture/房子.gif');
+  background-image: url('../assets/picture/下雨.gif');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
