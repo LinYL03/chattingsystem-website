@@ -2,7 +2,7 @@
   <div class="body">
       <div class="box">
           <div class="left">
-              <img src="../assets/picture/house.jpg" alt="背景图" height="300px">
+              <img src="../assets/picture/house.png" alt="背景图" height="300px">
           </div>
           <div class="right">
               <h1>LOGIN</h1>
