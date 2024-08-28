@@ -2,7 +2,7 @@
   <div class="body">
       <div class="box">
           <div class="left">
-              <img src="../assets/picture/cat.png" alt="背景图" height="300px">
+              <img src="../assets/picture/house.jpg" alt="背景图" height="300px">
           </div>
           <div class="right">
               <h1>LOGIN</h1>
@@ -134,7 +134,7 @@ export default {
 .body {
   width: 100%;
   height: 100%;
-  background-image: url('../assets/picture/房子.gif');
+  background-image: url('../assets/picture/落叶.gif');
   background-size: cover;    /* 设置为cover，以保持宽高比并覆盖整个屏幕 */
   background-repeat: no-repeat;    /* 禁止背景图重复 */
   background-attachment: fixed;    /* 固定背景图，使其在滚动时保持固定 */
