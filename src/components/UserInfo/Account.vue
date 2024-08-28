@@ -5,29 +5,42 @@
         <h1>绑定邮箱</h1>
         <div class="EmailBox">
           <el-form :model="emailForm" ref="emailFormRef" label-width="100px" class="accountEmail">
-            <el-form-item label="邮箱" prop="email">
-              <el-input prefix-icon="iconfont icon-youxiang1" v-model="emailForm.email" :disabled="!isEditingEmail"
-                class="elinput"></el-input>
+            <el-form-item prop="email">
+              <div style="display: flex;">
+                <label style="color: #ffffff;width: 50px;margin-left: 29px;">邮箱</label>
+                <el-input prefix-icon="iconfont icon-youxiang1" v-model="emailForm.email" :disabled="!isEditingEmail"
+                  class="elinput"></el-input>
+              </div>
             </el-form-item>
           </el-form>
-          <el-button type="primary" @click="toggleEmailEdit">{{ isEditingEmail ? '提交' : '修改' }}</el-button>
+          <el-button class="el-button" type="primary" @click="toggleEmailEdit">{{ isEditingEmail ? '提交' : '修改'
+            }}</el-button>
         </div>
       </div>
       <div class="updatePwd">
         <h1>修改密码</h1>
         <el-form :model="accountForm" status-icon :rules="accountFormRules" ref="accountFormRef" label-width="100px"
           class="accountPwd">
-          <el-form-item label="当前密码" prop="password">
-            <el-input type="password" v-model="accountForm.password" autocomplete="off"
-              prefix-icon="iconfont icon-password"></el-input>
+          <el-form-item label="" prop="password">
+            <div style="display: flex;">
+              <label class="passwordlab">当前密码</label>
+              <el-input type="password" v-model="accountForm.password" autocomplete="off"
+                prefix-icon="iconfont icon-password"></el-input>
+            </div>
           </el-form-item>
-          <el-form-item label="新的密码" prop="newPassWord">
-            <el-input type="password" v-model="accountForm.newPassWord" autocomplete="off"
-              prefix-icon="iconfont icon-password"></el-input>
+          <el-form-item prop="newPassWord">
+            <div style="display: flex;">
+              <label class="passwordlab">新的密码</label>
+              <el-input type="password" v-model="accountForm.newPassWord" autocomplete="off"
+                prefix-icon="iconfont icon-password"></el-input>
+            </div>
           </el-form-item>
-          <el-form-item label="确认密码" prop="checkPassWord">
-            <el-input type="password" v-model="accountForm.checkPassWord" autocomplete="off"
-              prefix-icon="iconfont icon-password"></el-input>
+          <el-form-item prop="checkPassWord">
+            <div style="display: flex;">
+              <label class="passwordlab">确认密码</label>
+              <el-input type="password" v-model="accountForm.checkPassWord" autocomplete="off"
+                prefix-icon="iconfont icon-password"></el-input>
+            </div>
           </el-form-item>
         </el-form>
         <el-button type="primary" @click="updatePwd" style="margin-left: 432px;">确认修改</el-button>
@@ -36,7 +49,8 @@
         <h1 style="width: 300px;">注销账号</h1>
         <el-button type="danger" @click="dialogVisible = true" class="deletebutton">注销</el-button>
       </div>
-      <el-alert title="警告! 账号一旦注销，不可找回，请谨慎操作" type="warning" show-icon>
+      <el-alert title="警告! 账号一旦注销，不可找回，请谨慎操作" type="warning" show-icon style="    background-color: #8c95a4;
+    color: #c90202;">
 
       </el-alert>
       <el-dialog title="注销账号" :visible.sync="dialogVisible" width="28%">
@@ -221,12 +235,24 @@ export default {
       margin-bottom: 20px;
         margin-top: 20px;
         width: 600px;
+       label{
+          color: #eaeaea;
+        }
 }
 .el-alert {
   margin-bottom: 20px;
 }
 .el-input{
-  width: 500px;
+  // width: 500px;
+      margin-left: 10px;
+}
+.elinput label{
+ color: #eaeaea;
+}
+.el-color-picker__icon,
+.el-input,
+.el-textarea{
+  width: 400px;
 }
 .el-form {
   margin-left: 100px;
@@ -235,13 +261,28 @@ export default {
 
 h1 {
   // text-align: center;
+  color: aliceblue;
 }
-
+.el-form-item__label{
+      text-align: right;
+        vertical-align: middle;
+        float: left;
+        font-size: 14px;
+        color: #eceef3;
+        line-height: 40px;
+        padding: 0 12px 0 0;
+        box-sizing: border-box;
+}
 .el-button {
   margin-left: 15px;
+  color: #eaeaea;
+    background-color: #6b7581;
+    border-color: #474848;
   
 }
-
+.el-form-item__label{
+  color: #e7eaef;
+}
 .deleteAccount {
 display: flex;
   flex-direction: row;
@@ -254,5 +295,21 @@ display: flex;
   height: 40px;
   margin-top: 20px;
   margin-left: 421px;
+}
+.passwordlab{
+  width: 80px;
+}
+.passwordlab::before{
+    content: '*';
+    color: #F56C6C;
+    margin-right: 4px;
+
+    width: 50px;
+}
+.accountPwd{
+display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: nowrap;
 }
 </style>

@@ -14,17 +14,22 @@
       </div>
       <div class="userInfoContainer">
         <el-form label-position="top" :model="userInfoForm" ref="userInfoFormRef">
-          <el-form-item label="用户名">
+          <el-form-item>
+            <label style="color: #ffffff;">用户名</label>
             <el-input v-model="userInfoForm.username" :disabled="!isEditing"></el-input>
           </el-form-item>
-          <el-form-item label="个性签名">
+          <el-form-item>
+            <label style="color: #ffffff;">个性签名</label>
             <el-input v-model="userInfoForm.signature" :disabled="!isEditing"></el-input>
           </el-form-item>
-          <el-form-item label="性别">
+          <el-form-item>
+            <label style="color: #ffffff;">性别</label>
+            <br>
             <el-radio :label="1" v-model="userInfoForm.sex" :disabled="!isEditing">男</el-radio>
             <el-radio :label="2" v-model="userInfoForm.sex" :disabled="!isEditing">女</el-radio>
           </el-form-item>
-          <el-form-item label="生日">
+          <el-form-item>
+            <label style="color: #ffffff;">生日</label>
             <el-date-picker type="date" v-model="userInfoForm.birthday" style="width: 100%"
               :disabled="!isEditing"></el-date-picker>
           </el-form-item>
@@ -168,6 +173,9 @@ export default {
 .uploadButton {
   text-align: center;
   margin: 30px auto;
+  color: #eaeaea;
+  background-color: #6b7581;
+  border-color: #474848;
 }
 
 .userInfoContainer {
@@ -187,7 +195,7 @@ export default {
 .signature {
   margin-bottom: 20px;
   font-size: 14px;
-  color: #666;
+  color: #cbbcbc;
   text-align: center;
   font-weight: 500;
 
@@ -205,8 +213,11 @@ export default {
   align-items: center;
 }
 
-
 .userInfoButton {
   // width: 18%;
+  color: #eaeaea;
+    background-color: #6b7581;
+    border-color: #474848;
 }
+
 </style>
