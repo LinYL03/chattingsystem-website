@@ -70,7 +70,7 @@ export default {
 .card {
   width: 75%;
   margin: 0 auto;
-  background: var(--main-dark-color);
+  background: #1d1d3099;
   position: fixed;
   border: 1px solid #182b57;
   border-radius: 20px;
@@ -115,7 +115,7 @@ export default {
 .imgback {
   width: 30px;
   height: 30px;
-      margin-right: 20px;
+  margin-right: 20px;
   transition: transform 0.3s ease;
 }
 
