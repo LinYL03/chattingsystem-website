@@ -2,7 +2,7 @@
   <div class="register_container">
     <!-- 背景图片 -->
     <div class="registerBg">
-      <img src="../assets/img/registerbg.jpg" alt />
+      <img src="../assets/img/注册背景.png" alt />
     </div>
     <div class="register_box">
       <!-- 登录表单区域 -->
@@ -142,10 +142,9 @@ export default {
 
 <style lang="less" scoped>
 .registerBg {
-  background-repeat: no-repeat;
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
+    background-repeat: no-repeat;
+    position: fixed;
+    width: 100%;
   img {
     width: 100%;
   }
@@ -163,7 +162,7 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
   h1 {
-    color: rgb(240, 199, 218);
+    color: #92a0fd;
     text-align: center;
     margin: 35px 0;
   }
@@ -178,13 +177,13 @@ export default {
   .el-input__inner {
     padding-left: 40px;
     height: 50px;
-    background-color: #ffffff90;
+    background-color: #a4a1a161;
     font-size: 18px;
     color: #fff;
     border-radius: 10px;
   }
   .el-input__prefix {
-    color: rgb(240, 199, 218);
+    // color: rgb(240, 199, 218);
     margin-left: 5px;
     top: 2px;
     i {
@@ -204,8 +203,9 @@ export default {
   font-weight: bold;
   border: none;
   color: white;
-  border-radius: 200px;
-  background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+  border-radius: 10px;
+  color: #151f5f;
+  background-image: linear-gradient(346deg, #9c9ea3 0%, #5491e4 100%);
   cursor: pointer;
 }
 .goHomeButton {
@@ -217,9 +217,9 @@ export default {
   font-size: 15px;
   font-weight: bold;
   border: none;
-  color: white;
+  color: #151f5f;
   border-radius: 50%;
-  background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+  background-image: linear-gradient(346deg, #9c9ea3 0%, #5491e4 100%);
   cursor: pointer;
 }
 </style>
