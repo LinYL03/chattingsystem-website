@@ -15,7 +15,9 @@
                     <span>当前在线用户</span>
                     <div class="ungroup">
                         <div class="nousers" v-if="userList.length === 1"><span>没有其他用户</span></div>
-                        <div class="userBox" v-for="(item, index) in userList" :key="index" v-if="item.username !== user.username" @click="chooseUser(item, index)" :class="{'active-user': active === index && isGroup === false}">
+                        <div class="userBox" v-for="(item, index) in userList" :key="index"
+                            v-if="item.username !== user.username" @click="chooseUser(item, index)"
+                            :class="{'active-user': active === index && isGroup === false}">
                             <div class="avatar"><img :src="item.avatar" alt=""></div>
                             <div class="username"><span>{{ item.username }}</span></div>
                         </div>
@@ -26,14 +28,12 @@
                 <div class="rightTop">
                     <div class="boxName" v-if="isGroup"><span>聊天室 ( {{ userListLength }} )</span></div>
                     <div class="boxName" v-else><span>{{ username }}</span></div>
-                    <div class="function"><span>其他功能</span></div>
+                    <!-- <div class="function"><span>其他功能</span></div> -->
                 </div>
                 <div class="rightDown">
                     <div class="chatArea">
                         <ul class="join" ref="joinUs">
-                            <li v-for="(item1, index) in messageContent"
-                            :key="index"
-                            :class="{
+                            <li v-for="(item1, index) in messageContent" :key="index" :class="{
                                 'my-message': item1.type === 1 ? true : false,
                                 'other-message': item1.type === 2 ? true : false,
                                 'my-audio-message': item1.type === 5 ? true : false,
@@ -42,7 +42,8 @@
                                 <div v-if="item1.type === 4">{{ item1.username }}离开了聊天室</div>
                                 <div v-if="item1.type === 1">
                                     <div v-if="item1.file" class="image">
-                                        <img :src="item1.file" class="file" v-if="item1.file" @load="loadOverImg" preview="1" />
+                                        <img :src="item1.file" class="file" v-if="item1.file" @load="loadOverImg"
+                                            preview="1" />
                                         <img :src="item1.avatar" class="avatar" />
                                     </div>
                                     <div v-else class="message">
@@ -54,7 +55,8 @@
                                     <div v-if="item1.file" class="image">
                                         <img :src="item1.avatar" class="avatar" />
                                         <span class="username">{{ item1.username }}</span>
-                                        <img :src="item1.file" class="file" v-if="item1.file" @load="loadOverImg" preview="1" />
+                                        <img :src="item1.file" class="file" v-if="item1.file" @load="loadOverImg"
+                                            preview="1" />
                                     </div>
                                     <div v-else class="message">
                                         <img :src="item1.avatar" class="avatar" />
@@ -65,7 +67,7 @@
 
                                 <div v-if="item1.type === 5">
                                     <div class="message">
-                                        <span @click="playAudioFromBase64( item1.msg )"> 语音 </span>
+                                        <span @click="playAudioFromBase64( item1.msg )">语音 </span>
                                         <img :src="item1.avatar" class="avatar" />
                                     </div>
                                 </div>
@@ -83,21 +85,23 @@
                         <div class="icon">
                             <img class="emoji" @click="emojiShow = !emojiShow" src="../assets/picture/emoji.svg" alt="">
                             <div class="emoji-box" tabindex="1" v-show="emojiShow" @blur="handleEmojiBlur">
-                                <span v-for="item in emojiList" :key="item.codes" @click="handleEmoji(item)">{{ item.char }}</span>
+                                <span v-for="item in emojiList" :key="item.codes" @click="handleEmoji(item)">{{
+                                    item.char }}</span>
                             </div>
                             <img class="shoot" @click="handleCanvas" src="../assets/picture/shoot.svg" alt="">
                             <label for="file"><img class="file" src="../assets/picture/file.svg" alt=""></label>
                             <input type="file" style="display: none" id="file" @change="handleFile" />
-                            <img src="../assets/picture/语音.svg" class="audio" @mousedown="startRecord" @mouseup="sendAudioToServe">
-                            <div class="audio-box" v-show="audioShow">正在录制</div>
+                            <img src="../assets/picture/语音.svg" class="audio" @mousedown="startRecord"
+                                @mouseup="sendAudioToServe">
+                            <div class="audio-box" v-show="audioShow">正在录制...<img src="../assets/img/录音中.png" style="width: 70px;margin-top: 12px;"></div>
                             <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo">
                             <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
-                                <div><button @click="endVideo" class="end-video-btn"></button></div>
+                                <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
                             </div>
                             <div class="video-box1" v-show="showVideoBox1">
-                                <div><button @click="endVideo" class="end-video-btn">e</button></div>
-                                <div><button @click="startTalk" class="start-video-btn">s</button></div>
+                                <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
+                                <div><img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn"></div>
                                 <video class="remoteVideo" id="remoteVideo" autoplay></video>
                             </div>
                         </div>
@@ -1299,20 +1303,17 @@ export default {
                 }
             }
             .audio-box {
-                position: absolute;
-                /* 设置为 Flexbox 布局 */
-                display: flex;
-                /* 水平居中 */
-                justify-content: center;
-                /* 垂直居中 */
-                align-items: center;
-                // align-items: start;
-                width: 200px;
-                height: 123px;
-                border-radius: 20px;
-                top: -140px;
-                left: 58px;
-                background: #fff;
+                    position: absolute;
+                    display: flex;
+                    align-items: center;
+                    width: 200px;
+                    height: 123px;
+                    border-radius: 20px;
+                    top: -140px;
+                    left: 58px;
+                    background: #fff;
+                    flex-direction: column;
+                    justify-content: center;
             }
             .audio-box::after {
                 position: absolute; /* 伪元素绝对定位 */
@@ -1353,8 +1354,8 @@ export default {
             }
             .end-video-btn {
                 position: absolute;
-                width: 30px;
-                height: 30px;
+                width: 50px;
+                height: 50px;
                 border-radius: 50%;
 
                 right: 160px;
@@ -1387,21 +1388,21 @@ export default {
             }
             .end-video-btn {
                 position: absolute;
-                width: 30px;
-                height: 30px;
+                width: 50px;
+                height: 50px;
                 border-radius: 50%;
 
-                right: 120px;
+                right: 70px;
                 bottom: 40px;
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
             .start-video-btn {
                 position: absolute;
-                width: 30px;
-                height: 30px;
+                width: 55px;
+                height: 55px;
                 border-radius: 50%;
 
-                right: 200px;
+                right: 220px;
                 bottom: 40px;
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
