@@ -9,7 +9,7 @@ module.exports = function (io) {
       if (user) {
         //表示用户存在,登录失败，服务器需要给当前用户响应，告诉登录失败
         socket.emit("userExit", {
-          msg: "该用户已登录聊天室，登录失败"
+          msg: "登录聊天室失败"
         })
       } else {
         data.sid = socket.id;
@@ -62,6 +62,24 @@ module.exports = function (io) {
     socket.on("oneImage", data => {
       // 发送给指定用户
       socket.to(data.tosid).emit('oneImg', data);
+    })
+
+    // 一对一视频之一
+    socket.on("sendIceCandidate", data => {
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
+    // 一对一视频之二
+    socket.on("sendOffer", data => {
+      // console.log("服务端的数据: ", data);
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
+    // 一对一视频之三
+    socket.on("sendAnswer", data => {
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
+    // 一对一视频 结束
+    socket.on("endCall", data => {
+      socket.to(data.tosid).emit('oneCalling', data);
     })
   });
 }
