@@ -209,7 +209,7 @@ export default {
   height: 588px;
   margin: 0 auto;
   border: none;
-
+  opacity: 0.9;
   // background: #eee;
 }
 

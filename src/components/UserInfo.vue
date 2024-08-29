@@ -70,7 +70,7 @@ export default {
 .card {
   width: 75%;
   margin: 0 auto;
-  background: #1d1d3099;
+  background: #1d1d30b3;
   position: fixed;
   border: 1px solid #182b57;
   border-radius: 20px;
