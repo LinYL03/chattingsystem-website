@@ -63,5 +63,23 @@ module.exports = function (io) {
       // 发送给指定用户
       socket.to(data.tosid).emit('oneImg', data);
     })
+
+    // 一对一视频之一
+    socket.on("sendIceCandidate", data => {
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
+    // 一对一视频之二
+    socket.on("sendOffer", data => {
+      // console.log("服务端的数据: ", data);
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
+    // 一对一视频之三
+    socket.on("sendAnswer", data => {
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
+    // 一对一视频 结束
+    socket.on("endCall", data => {
+      socket.to(data.tosid).emit('oneCalling', data);
+    })
   });
 }
