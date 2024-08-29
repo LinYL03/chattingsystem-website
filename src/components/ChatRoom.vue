@@ -1,16 +1,42 @@
 <template>
   <div class="chatRoom" ref="room">
-    <div class="chatList">
+    <div class="userinfo">
       <div class="avatar">
         <img :src="user.avatar" alt="" />
-        <span>{{ user.username }}</span>
+        <!-- <span>{{ user.username }}</span> -->
+      </div>
+      <!-- 图标列表 -->
+      <div
+        style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; gap: 30px;padding-top: 20px;">
+        <img src="../assets//img/气泡.png" style="width: 24px; height: 24px;">
+
+        <img src="../assets/img/好友.png" style="width: 24px; height: 24px;">
+        <img src="../assets/img/文件.png" style="width: 24px; height: 24px;">
+        <img src="../assets/img/收藏.png" style="width: 24px; height: 24px;">
+
+      </div>
+      <!-- 底部菜单图标 -->
+      <div style="display: flex;justify-content: center;padding-top: 240px;">
+        <img src="../assets/img/列表.png" style="width: 24px; height: 24px;">
+      </div>
+    </div>
+    <div class="chatList">
+      <div class="serch">
+
+        <div class="sousuokuang">
+          <img src="../assets/img/serch.png" style="width: 16px; height: 16px; margin-right: 8px;">
+          <input type="text" placeholder="搜索"
+            style="border: none; outline: none; background-color: transparent; width: 100%;">
+        </div>
+        <button
+          style="background-color: #e0e0e0; border: none; padding: 5px 10px; margin-left: 8px; border-radius: 5px;">
+          <img src="../assets/img/jh.png" style="width: 16px; height: 16px;">
+        </button>
+
+
       </div>
       <el-divider></el-divider>
-      <div
-        class="group"
-        :class="isGroup ? 'active-user' : ''"
-        @click="chooseGroup"
-      >
+      <div class="group" :class="isGroup ? 'active-user' : ''" @click="chooseGroup">
         <img src="../assets/img/star.png" alt="" />
         <span>群聊</span>
       </div>
@@ -18,12 +44,8 @@
         <span>当前用户列表</span>
       </div>
       <div class="userChat">
-        <div
-          class="userBox"
-          :class="active === index ? 'active-user' : ''"
-          @click="chooseUser(item, index)"
-          v-for="(item, index) in userList"
-          :key="index">
+        <div class="userBox" :class="active === index ? 'active-user' : ''" @click="chooseUser(item, index)"
+          v-for="(item, index) in userList" :key="index">
           <img :src="item.avatar" alt="" />
           <span>{{ item.username }}</span>
         </div>
@@ -34,41 +56,23 @@
       <p class="name" v-else>{{ username }}</p>
       <div class="chatContent">
         <ul class="join" ref="joinUs">
-          <li
-            v-for="(item1, index) in messageContent"
-            :key="index"
-            :class="{
-              'my-message': item1.type === 1 ? true : false,
-              'other-message': item1.type === 2 ? true : false,
-            }"
-          >
+          <li v-for="(item1, index) in messageContent" :key="index" :class="{
+          'my-message': item1.type === 1 ? true : false,
+          'other-message': item1.type === 2 ? true : false,
+        }">
             <div v-if="item1.type === 3">
               欢迎{{ item1.username }}加入聊天室
             </div>
             <div v-if="item1.type === 4">{{ item1.username }}离开了聊天室</div>
             <div v-if="item1.type === 1">
-              <img
-                :src="item1.file"
-                alt
-                class="file"
-                v-if="item1.file"
-                @load="loadOverImg"
-                preview="1"
-              />
+              <img :src="item1.file" alt class="file" v-if="item1.file" @load="loadOverImg" preview="1" />
               <span v-else>{{ item1.msg }}</span>
               <img :src="item1.avatar" class="avatar" />
             </div>
             <div v-if="item1.type === 2">
               <img :src="item1.avatar" alt class="avatar" />
               <p class="username">{{ item1.username }}</p>
-              <img
-                :src="item1.file"
-                alt
-                class="file"
-                v-if="item1.file"
-                @load="loadOverImg"
-                preview="1"
-              />
+              <img :src="item1.file" alt class="file" v-if="item1.file" @load="loadOverImg" preview="1" />
               <p class="content" v-else>{{ item1.msg }}</p>
             </div>
           </li>
@@ -76,38 +80,16 @@
       </div>
       <div class="sendMessage">
         <div class="icon">
-          <span
-            class="iconfont icon-smile"
-            @click="emojiShow = !emojiShow"
-          ></span>
-          <div
-            class="emoji"
-            tabindex="1"
-            v-show="emojiShow"
-            @blur="handleEmojiBlur"
-          >
-            <span
-              v-for="item in emojiList"
-              :key="item.codes"
-              @click="handleEmoji(item)"
-              >{{ item.char }}</span
-            >
+          <span class="iconfont icon-smile" @click="emojiShow = !emojiShow"></span>
+          <div class="emoji" tabindex="1" v-show="emojiShow" @blur="handleEmojiBlur">
+            <span v-for="item in emojiList" :key="item.codes" @click="handleEmoji(item)">{{ item.char
+              }}</span>
           </div>
           <label class="iconfont icon-Path" for="file"></label>
-          <input
-            type="file"
-            style="display: none"
-            id="file"
-            @change="handleFile"
-          />
+          <input type="file" style="display: none" id="file" @change="handleFile" />
           <span class="iconfont icon-jietu" @click="handleCanvas"></span>
         </div>
-        <textarea
-          cols="80"
-          rows="5"
-          ref="textarea"
-          @keydown.enter="handlePress"
-        ></textarea>
+        <textarea cols="80" rows="5" ref="textarea" @keydown.enter="handlePress"></textarea>
         <button class="sendMessage" @click="sendContentToServe">发送</button>
         <img :src="imgUrl" alt />
       </div>
@@ -315,20 +297,17 @@ export default {
 <style lang="less" scoped>
 .chatRoom {
   display: flex;
-  .chatList {
-    width: 185px;
-    height: 550px;
-    padding: 20px 0 0 20px;
-    background-image: linear-gradient(
-      to right top,
-      #a98fb3,
-      #a08fb9,
-      #9490bd,
-      #8691c1,
-      #7593c4
-    );
+
+  .userinfo {
+    width: 65px;
+    background-color: #2E2E2E;
+
     .avatar {
       position: relative;
+      padding-top: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+
       span {
         position: absolute;
         left: 53px;
@@ -336,89 +315,163 @@ export default {
         font-size: 18px;
         color: yellow;
       }
+
+      img {
+        width: 45px;
+        height: 45px;
+        border-radius: 10%;
+      }
+    }
+  }
+
+  .chatList {
+    width: 255px;
+    height: 550px;
+    // padding-right: 70px;
+    background-color: #E6E5E5;
+    // background-image: linear-gradient(to right top,
+    //         #a98fb3,
+    //         #a08fb9,
+    //         #9490bd,
+    //         #8691c1,
+    //         #7593c4);
+
+    .serch {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 8px;
+      width: 235px;
+
+      .sousuokuang {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        background-color: #e0e0e0;
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+
+      span {
+        position: absolute;
+        left: 53px;
+        top: 11px;
+        font-size: 18px;
+        color: yellow;
+      }
+
       img {
         width: 45px;
         height: 45px;
         border-radius: 50%;
       }
     }
+
     .el-divider {
       margin: 10px 0;
     }
+
     .group {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
-      margin-right: 10px;
       cursor: pointer;
       box-sizing: border-box;
+
       img {
-        width: 60px;
-        height: 60px;
-        margin-right: 20px;
+        width: 45px;
+        height: 45px;
+        /* margin-right: 20px; */
+        padding-left: 10px;
       }
+
       span {
-        font-size: 20px;
-        color: #fff;
+        font-size: 16px;
+        color: #000000;
+        padding-left: 15px;
       }
     }
+
     .active-user {
       border: 2px solid #ccc;
       border-radius: 5px;
+      width: 255px;
     }
+
     .listTop {
       span {
-        color: #fff;
+        color: #000;
         display: block;
         margin-bottom: 10px;
         font-weight: bold;
+        font-size: 15px;
       }
+
       padding-left: 5px;
     }
+
     .userChat {
       overflow: auto;
       height: 350px;
-      padding-left: 5px;
-      margin-right: 10px;
+      // padding-left: 5px;
+      // margin-right: 10px;
       box-sizing: border-box;
+
       .userBox {
         display: flex;
         align-items: center;
         height: 55px;
         cursor: pointer;
+        // padding-left: 10px;
+        border: 1px solid #d8d1d1;
+
         img {
-          width: 50px;
-          height: 50px;
+          width: 45px;
+          height: 45px;
           margin-right: 20px;
+          padding-left: 10px;
         }
+
         span {
-          font-size: 20px;
-          color: #fff;
+          font-size: 16px;
+          color: #000000;
         }
       }
     }
+
     .userChat::-webkit-scrollbar {
       display: none;
     }
   }
 }
+
+
 .roomRight {
   flex: 1;
   background-color: #f6f6f6;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  width: 482px;
+
   .name {
     display: flex;
-    justify-content: center;
     line-height: 40px;
     margin-block-start: 0;
     margin-block-end: 0;
-    font-size: 18px;
+    font-size: 20px;
+    width: 100%;
     border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+    padding-left: 25px;
   }
+
   .chatContent {
     height: 340px;
+    width: 100%;
     padding: 5px 0;
+
     .join {
       text-align: center;
       color: #ccc;
@@ -428,19 +481,24 @@ export default {
       margin-top: 0;
       padding: 10px 30px 0;
       list-style: none;
+
       li {
         padding-bottom: 10px;
       }
     }
+
     .join::-webkit-scrollbar {
       display: none;
     }
+
     .my-message {
       display: flex;
       justify-content: flex-end;
+
       div {
         display: flex;
         position: relative;
+
         &::after {
           content: "";
           right: 45px;
@@ -452,16 +510,19 @@ export default {
           border-bottom: 6px solid transparent;
           border-right: 6px solid transparent;
         }
+
         .file {
           max-width: 330px;
           max-height: 170px;
           margin-right: 12px;
           cursor: pointer;
         }
+
         .avatar {
           width: 45px;
           height: 45px;
         }
+
         span {
           overflow: auto;
           box-sizing: border-box;
@@ -477,13 +538,16 @@ export default {
         }
       }
     }
+
     .other-message {
       position: relative;
       display: flex;
       justify-content: flex-start;
+
       div {
         display: flex;
         position: relative;
+
         &::before {
           content: "";
           left: 45px;
@@ -495,6 +559,7 @@ export default {
           border-bottom: 5px solid transparent;
           border-right: 5px solid #ccc;
         }
+
         .file {
           max-width: 330px;
           max-height: 170px;
@@ -502,10 +567,12 @@ export default {
           margin-left: 11px;
           cursor: pointer;
         }
+
         .avatar {
           width: 45px;
           height: 45px;
         }
+
         .username {
           position: absolute;
           left: 55px;
@@ -513,6 +580,7 @@ export default {
           font-size: 14px;
           color: #888;
         }
+
         .content {
           overflow: auto;
           margin-top: 15px;
@@ -531,15 +599,19 @@ export default {
       }
     }
   }
+
   .sendMessage {
     position: relative;
     flex: 1;
     background-color: #fff;
-    padding-left: 15px;
+    // padding-left: 15px;
+    width: 100%;
+
     .icon {
       height: 25px;
       padding-top: 6px;
       display: flex;
+
       .icon-smile,
       .icon-Path,
       .icon-jietu {
@@ -547,9 +619,11 @@ export default {
         padding: 0 6px;
         cursor: pointer;
       }
+
       .icon-jietu {
         font-size: 23px !important;
       }
+
       .emoji {
         position: absolute;
         display: flex;
@@ -561,12 +635,14 @@ export default {
         background-color: #fff;
         border: 1px solid #cccccc;
         outline: none;
+
         span {
           padding: 7px;
           cursor: pointer;
         }
       }
     }
+
     textarea {
       border: none;
       resize: none;
@@ -574,18 +650,23 @@ export default {
       font-size: 15px;
       padding-left: 10px;
     }
+
     textarea::-webkit-scrollbar {
       display: none;
     }
+
     .sendMessage {
       position: absolute;
       bottom: 35px;
       right: 20px;
-      font-size: 16px;
+      font-size: 18px;
       border-radius: 5px;
       padding: 4px 10px;
       background-color: #f5f5f5;
       border: 1px solid #ccc;
+      width: 100px;
+      color: #49CD88;
+      font-weight: normal;
     }
   }
 }
