@@ -1324,7 +1324,7 @@ export default {
 
                 width: 40px;
                 height: 40px;
-                background-color: #fff;
+                background-color: #91ED61;
                 border-radius: 5px; /* 钝角 */
                 clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
                 transform: translateY(-50%) rotate(135deg); /* 旋转形成钝角 */
