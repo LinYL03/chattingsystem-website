@@ -95,7 +95,11 @@
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
                                 <div><button @click="endVideo" class="end-video-btn"></button></div>
                             </div>
-                            <video class="remoteVideo" id="remoteVideo" autoplay></video>
+                            <div class="video-box1" v-show="showVideoBox1">
+                                <div><button @click="endTalk" class="end-video-btn">e</button></div>
+                                <div><button @click="startTalk" class="start-video-btn">s</button></div>
+                                <video class="remoteVideo" id="remoteVideo" autoplay></video>
+                            </div>
                         </div>
                         <textarea cols="80" rows="5" ref="textarea" @keydown.enter="handlePress"></textarea>
                         <button @click="sendContentToServe" class="send-btn">发送</button>
@@ -134,7 +138,8 @@ export default {
             pc: null, // RTCPeerConnection对象
             localStream: null, // 本地音频流
             remoteStream: null, // 远程音频流
-            showVideoBox: false, // 展示视频的容器
+            showVideoBox: false, // 展示自己视频的容器
+            showVideoBox1: false, // 展示别人视频的容器
 
             // 容器可拖动
             DragEl: null,//拖动元素
@@ -143,6 +148,10 @@ export default {
             disY: 0, // 鼠标与元素左上角的垂直偏移
             pageWidth: window.innerWidth,
             pageHeight: window.innerHeight,
+
+            // 双方视频
+            start_offer: null,
+
         };
     },
     computed: {
@@ -584,6 +593,8 @@ export default {
             this.$message.success("视频通话结束");
         },
         handleEndCall() {
+            this.showVideoBox = false;
+            this.showVideoBox1 = false;
             // 停止所有的媒体流轨道
             if (this.localStream) {
                 this.localStream.getTracks().forEach(track => {
@@ -601,6 +612,7 @@ export default {
         },
         // 接收并处理对方的Answer
         async handleAnswer(answer) {
+            this.showVideoBox1 = true;
             if (!this.pc)
                 // 创建RTCPeerConnection对象
                 this.ensurePeerConnection();
@@ -624,7 +636,13 @@ export default {
             }
         },
         // 处理Offer并返回Answer
-        async handleOffer(offer) {
+        handleOffer(offer) {
+            console.log(offer.username, " 申请与你连接视频, 是否同意？");
+            this.showVideoBox1 = true;
+            this.start_offer = offer;
+        },
+        async startTalk() {
+            this.showVideoBox = true;
             try {
                 if (!this.pc)
                     // 创建RTCPeerConnection对象
@@ -644,13 +662,36 @@ export default {
                     this.pc.addTrack(track, this.localStream);
                 });
 
-                await this.pc.setRemoteDescription(new RTCSessionDescription({ type: "offer", sdp: offer }));
+                await this.pc.setRemoteDescription(new RTCSessionDescription({ type: "offer", sdp: this.start_offer.data.sdp }));
                 const answer = await this.pc.createAnswer();
                 await this.pc.setLocalDescription(answer);
                 this.$emit("sendAnswer", { type: "answer", sdp: answer.sdp }, this.isGroup);
             } catch (error) {
                 console.error("无法处理Offer:", error);
             }
+        },
+        async endTalk() {
+            // 接收方取消视频
+            this.showVideoBox1 = false;
+            this.showVideoBox = false;
+
+            // 停止所有的媒体流轨道
+            if (this.localStream) {
+                this.localStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+            }
+
+            // 发送一个结束视频通话的信号给对方
+            this.$emit("endCall", { type: "endCall" }, this.isGroup);
+
+            // 关闭 RTCPeerConnection
+            if (this.pc) {
+                this.pc.close();
+                this.pc = null;
+            }
+
+            this.$message.success("视频通话结束");
         },
     },
 };
@@ -1322,7 +1363,7 @@ export default {
             height: 600px;
             background: #fff;
 
-            left: calc((var(--page-width)- 350px) / 2);
+            left: calc((var(--page-width) + 100px) / 2);
             top: calc((var(--page-height) - 600px) / 2);
             // cursor: move; /* 鼠标悬停时显示移动光标 */
             .localVideo {
@@ -1343,13 +1384,57 @@ export default {
             }
         }
 
-        // .icon #localVideo,
-        .icon #remoteVideo {
-            background: #000;
-            position: fixed;
-            z-index: 10;
-            border: 2px solid white;
+        .icon .video-box1 {
+            z-index: 999;
+            display: flex;
+            /* 水平居中 */
+            justify-content: center;
+            /* 垂直居中 */
+            align-items: center;
+
+            position: fixed; // 相对于页面定位
+            width: 350px;
+            height: 600px;
+            background: #fff;
+
+            left: calc((var(--page-width) - 800px) / 2);
+            top: calc((var(--page-height) - 600px) / 2);
+            // left: 200px;
+            .remoteVideo {
+                flex-grow: 1; /* 使视频占据所有可用空间 */
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* 保持视频内容比例填充容器 */
+            }
+            .end-video-btn {
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+
+                right: 120px;
+                bottom: 40px;
+                z-index: 1000; /* 确保按钮在视频之上 */
+            }
+            .start-video-btn {
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+
+                right: 200px;
+                bottom: 40px;
+                z-index: 1000; /* 确保按钮在视频之上 */
+            }
         }
+
+        // .icon #localVideo,
+        // .icon #remoteVideo {
+        //     background: #000;
+        //     position: fixed;
+        //     z-index: 10;
+        //     border: 2px solid white;
+        // }
 
         // .icon #localVideo {
         //     top: 10px;
@@ -1357,12 +1442,12 @@ export default {
         //     width: 225px;
         //     height: 150px;
         // }
-        .icon #remoteVideo {
-            top: 10px;
-            right: 245px;
-            width: 225px;
-            height: 150px;
-        }
+        // .icon #remoteVideo {
+        //     top: 10px;
+        //     right: 245px;
+        //     width: 225px;
+        //     height: 150px;
+        // }
 
         textarea {
             width: 94%;

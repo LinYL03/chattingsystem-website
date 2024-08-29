@@ -133,7 +133,7 @@ export default {
     // 一对一监听视频事件
     this.socket.on('oneCalling', (message) => {
         if (message.data.type === 'offer') {
-          this.$refs.chatroom.handleOffer(message.data.sdp);
+          this.$refs.chatroom.handleOffer(message);
         } else if (message.data.type === 'answer') {
           this.$refs.chatroom.handleAnswer(message.data);
         } else if (message.data.type === 'candidate') {
@@ -190,7 +190,7 @@ export default {
       const { username, avatar, sid } = this.user;
       const tosid = this.sid;
       console.log("sendOffer 发送到父组件的数据如下", data);
-      console.log("sendOffer 发送到父组件的数据如下", { username, avatar, sid });
+      console.log("sendOffer 发送方的名字，头像，sid", { username, avatar, sid });
       console.log("sendOffer 发送到父组件的数据如下", tosid);
       console.log("sendOffer 发送到父组件的数据如下", isGroup);
       if (isGroup) {
