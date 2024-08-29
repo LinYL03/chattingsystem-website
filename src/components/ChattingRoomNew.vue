@@ -96,7 +96,7 @@
                                 <div><button @click="endVideo" class="end-video-btn"></button></div>
                             </div>
                             <div class="video-box1" v-show="showVideoBox1">
-                                <div><button @click="endTalk" class="end-video-btn">e</button></div>
+                                <div><button @click="endVideo" class="end-video-btn">e</button></div>
                                 <div><button @click="startTalk" class="start-video-btn">s</button></div>
                                 <video class="remoteVideo" id="remoteVideo" autoplay></video>
                             </div>
@@ -572,6 +572,8 @@ export default {
             }
         },
         endVideo() {
+            // 接收方取消视频
+            this.showVideoBox1 = false;
             this.showVideoBox = false;
 
             // 停止所有的媒体流轨道
@@ -669,29 +671,6 @@ export default {
             } catch (error) {
                 console.error("无法处理Offer:", error);
             }
-        },
-        async endTalk() {
-            // 接收方取消视频
-            this.showVideoBox1 = false;
-            this.showVideoBox = false;
-
-            // 停止所有的媒体流轨道
-            if (this.localStream) {
-                this.localStream.getTracks().forEach(track => {
-                    track.stop();
-                });
-            }
-
-            // 发送一个结束视频通话的信号给对方
-            this.$emit("endCall", { type: "endCall" }, this.isGroup);
-
-            // 关闭 RTCPeerConnection
-            if (this.pc) {
-                this.pc.close();
-                this.pc = null;
-            }
-
-            this.$message.success("视频通话结束");
         },
     },
 };
