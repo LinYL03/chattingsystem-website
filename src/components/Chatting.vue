@@ -7,7 +7,12 @@
       ref="chatroom"
       @sendServer="sendServer"
       @handleFile="handleFile"
-      @activeSid="activeSid" />
+      @activeSid="activeSid"
+      @sendIceCandidate="sendIceCandidate"
+      @sendOffer="sendOffer"
+      @sendAnswer="sendAnswer"
+      @endCall="endCall"
+      />
     </div>
     <!-- <div>1234565</div> -->
     <!-- <div class="null">
@@ -125,6 +130,18 @@ export default {
       // 把接收到的图片显示到聊天窗口中
       this.$refs.chatroom.handleOne(data);
     });
+    // 一对一监听视频事件
+    this.socket.on('oneCalling', (message) => {
+        if (message.data.type === 'offer') {
+          this.$refs.chatroom.handleOffer(message.data.sdp);
+        } else if (message.data.type === 'answer') {
+          this.$refs.chatroom.handleAnswer(message.data);
+        } else if (message.data.type === 'candidate') {
+          this.$refs.chatroom.handleIceCandidate(message.data);
+        } else if (message.data.type === 'endCall') {
+          this.$refs.chatroom.handleEndCall();
+        }
+    });
   },
   destroyed() {
     if (this.socket) this.socket.disconnect();
@@ -144,18 +161,62 @@ export default {
       const { username, avatar, sid } = this.user;
       const tosid = this.sid;
       if (isGroup) {
-        this.socket.emit("sendImage", { username, avatar, file });
+        this.socket.emit("sendImage", { username, avatar, file});
       } else {
-        this.socket.emit("oneImage", { username, avatar, file, tosid, sid });
+        this.socket.emit("oneImage", { username, avatar, file, tosid, sid});
       }
     },
-    sendServer(content, isGroup) {
+    sendServer(content, isGroup, isAudio) {
+      const { username, avatar, sid } = this.user;
+      const tosid = this.sid;
+      console.log("父组件中的数据样子：", content);
+      if (isGroup) {
+        this.socket.emit("sendMessage", { username, avatar, isAudio, msg: content });
+      } else {
+        this.socket.emit("oneMessage", { username, avatar, isAudio, sid, tosid, msg: content, });
+      }
+    },
+    sendIceCandidate(data, isGroup) {
+      // console.log("sendIceCandidate 发送到父组件的数据如下", data);
       const { username, avatar, sid } = this.user;
       const tosid = this.sid;
       if (isGroup) {
-        this.socket.emit("sendMessage", { username, avatar, msg: content });
+        console.log("等会实现");
       } else {
-        this.socket.emit("oneMessage", { username, avatar, sid, tosid, msg: content, });
+        this.socket.emit("sendIceCandidate", {username, avatar, sid, tosid, data})
+      }
+    },
+    sendOffer(data, isGroup) {
+      const { username, avatar, sid } = this.user;
+      const tosid = this.sid;
+      console.log("sendOffer 发送到父组件的数据如下", data);
+      console.log("sendOffer 发送到父组件的数据如下", { username, avatar, sid });
+      console.log("sendOffer 发送到父组件的数据如下", tosid);
+      console.log("sendOffer 发送到父组件的数据如下", isGroup);
+      if (isGroup) {
+        console.log("等会实现");
+      } else {
+        this.socket.emit("sendOffer", {username, avatar, sid, tosid, data})
+      }
+    },
+    sendAnswer(data, isGroup) {
+      console.log("sendAnswer 发送到父组件的数据如下", data);
+      const { username, avatar, sid } = this.user;
+      const tosid = this.sid;
+      if (isGroup) {
+        console.log("等会实现");
+      } else {
+        this.socket.emit("sendAnswer", {username, avatar, sid, tosid, data})
+      }
+    },
+    endCall(data, isGroup) {
+      console.log("endCall 发送到父组件的数据如下", data);
+      const { username, avatar, sid } = this.user;
+      const tosid = this.sid;
+      if (isGroup) {
+        console.log("等会实现");
+      } else {
+        this.socket.emit("endCall", {username, avatar, sid, tosid, data})
       }
     },
     loginOut() {
