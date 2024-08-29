@@ -6,7 +6,7 @@ module.exports = {
     port: '3306',
     user: 'root',
     password: 'root',
-    database: 'user',
+    database: 'mysqlworkbench',
     dateStrings: true,
   },
   //连接数据库，使用mysql的连接池方式
