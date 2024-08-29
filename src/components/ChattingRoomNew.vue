@@ -1311,7 +1311,7 @@ export default {
                     border-radius: 20px;
                     top: -140px;
                     left: 58px;
-                    background: #fff;
+                    background: #91ED61;
                     flex-direction: column;
                     justify-content: center;
             }
