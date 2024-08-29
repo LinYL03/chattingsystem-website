@@ -2,7 +2,7 @@
   <div class="body">
       <div class="box">
           <div class="left">
-              <img src="../assets/picture/cat.png" alt="背景图" height="300px">
+              <img src="../assets/picture/house.png" alt="背景图" height="300px">
           </div>
           <div class="right">
               <h1>LOGIN</h1>
@@ -134,7 +134,7 @@ export default {
 .body {
   width: 100%;
   height: 100%;
-  background-image: url('../assets/picture/房子.gif');
+  background-image: url('../assets/picture/落叶.gif');
   background-size: cover;    /* 设置为cover，以保持宽高比并覆盖整个屏幕 */
   background-repeat: no-repeat;    /* 禁止背景图重复 */
   background-attachment: fixed;    /* 固定背景图，使其在滚动时保持固定 */
@@ -183,11 +183,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 23px; /* 胶囊形状 */
+  border-radius: 21px; /* 胶囊形状 */
   height: 46px; /* 高度 */
-  width: 150px; /* 根据内容自动调整宽度 */
+  width: 120px; /* 根据内容自动调整宽度 */
   padding: 0 20px; /* 内边距 */
-  background: linear-gradient(to right, #65cbf7, #b3a5fc); /* 渐变背景 */
+      background: linear-gradient(to right, #ebc931, #ff6152);
   position: relative;
   overflow: hidden; /* 确保溢出的内容被隐藏 */
   border: none; /* 去掉边框 */
@@ -215,7 +215,7 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: #3498db;
+  background-color: #ef5c0d;
   /* background-color: #000; */
   transition: left 0.5s ease;
 }
@@ -242,7 +242,7 @@ export default {
   width: 80px; /* 根据内容自动调整宽度 */
   padding: 0 10px; /* 内边距 */
   // background: linear-gradient(to right, #65cbf7, #b3a5fc); /* 渐变背景 */
-  background-color: #65cbf7;
+  // background-color: #65cbf7;
   position: relative;
   overflow: hidden; /* 确保溢出的内容被隐藏 */
   border: none; /* 去掉边框 */
@@ -257,8 +257,9 @@ export default {
 .btn3 button {
   // font-size: 1rem; /* 字体大小 */
   font-weight: 100; /* 字体粗细 */
-  color: #fff; /* 字体颜色 */
-  background-color: transparent; /* 胶囊体背景颜色透过 */
+  color: #454545;
+  background-color: #e7a56a;
+  border-radius: 5px;
   border: none; /* 去掉按钮边框 */
   height: 100%; /* 高度自适应 */
   width: 100%; /* 宽度自适应 */
@@ -268,10 +269,10 @@ export default {
   z-index: 1; /* 确保文本在最上层 */
 }
 
-.btn2:hover,
-.btn3:hover {
+.btn2 button:hover,
+.btn3 button:hover {
   // background: linear-gradient(to right, #4a8bd1, #9b8dfc); /* 悬停时渐变背景色加深 */
-  background-color: #4ea3ce;
+  background-color: #e08907;
 }
 
 // 更新的样式

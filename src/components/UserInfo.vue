@@ -1,18 +1,16 @@
 <template>
   <div class="userinfo">
-    <el-card>
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
-      >
-        <el-menu-item index="1">个人资料</el-menu-item>
-        <el-menu-item index="2">账号安全</el-menu-item>
-        <el-menu-item index="3">我的消息</el-menu-item>
-      </el-menu>
+    <div class="card">
+      <div class="menu">
+        <div class="menu-item" :class="{ active: activeIndex === '1' }" @click="handleSelect('1')">个人资料</div>
+        <div class="menu-item" :class="{ active: activeIndex === '2' }" @click="handleSelect('2')">账号安全</div>
+        <!-- <div class="menu-item" :class="{ active: activeIndex === '3' }" @click="handleSelect('3')">我的消息</div> -->
+
+        <img src="../assets/img/返回.png" class="back imgback" @click="handleBack">
+      </div>
+
       <router-view></router-view>
-    </el-card>
+    </div>
   </div>
 </template>
 
@@ -33,37 +31,25 @@ export default {
     handleSelect(key) {
       switch (key) {
         case "1":
-          if (this.activeIndex == "1") {
-            return;
-          } else {
-            this.$router.push("/userinfo/1");
-          }
+          if (this.activeIndex === "1") return;
+          this.$router.push("/userinfo/1");
           break;
         case "2":
-          if (this.activeIndex == "2") {
-            return;
-          } else {
-            this.$router.push("/userinfo/2");
-          }
-          break;
-        case "3":
-          if (this.activeIndex == "3") {
-            return;
-          } else {
-            this.$router.push("/userinfo/3");
-          }
+          if (this.activeIndex === "2") return;
+          this.$router.push("/userinfo/2");
           break;
       }
     },
     getRoutePath() {
-      var path = this.$route.path;
+      const path = this.$route.path;
       if (path === "/userinfo/1") {
         this.activeIndex = "1";
       } else if (path === "/userinfo/2") {
         this.activeIndex = "2";
-      } else if (path === "/userinfo/3") {
-        this.activeIndex = "3";
       }
+    },
+    handleBack() {
+      this.$router.push("/chat");
     },
   },
 };
@@ -71,19 +57,69 @@ export default {
 
 <style lang="less" scoped>
 .userinfo {
-  padding-bottom: 20px;
+  width: 100%;
+  height: 96.2%;
+  background-image: url('../assets/picture/下雨.gif');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  object-fit: cover;
+  padding-top: 30px;
 }
-.el-card {
-  height: 100%;
+
+.card {
   width: 75%;
   margin: 0 auto;
-  margin-top: 20px;
-  position: relative;
-  .el-menu-demo {
-    margin-bottom: 30px;
-    .el-menu-item {
-      font-size: 16px;
-    }
-  }
+  background: #1d1d3099;
+  position: fixed;
+  border: 1px solid #182b57;
+  border-radius: 20px;
+  padding: 20px;
+  margin-left: 180px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  background: #44474e73;
+  border-radius: 10px;
+  padding: 10px;
+  border-bottom: solid 1px #5e5959;
+}
+
+.menu-item {
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: all 0.3s ease;
+  margin-right: 20px;
+}
+
+.menu-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.back {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.imgback {
+  width: 30px;
+  height: 30px;
+  margin-right: 20px;
+  transition: transform 0.3s ease;
+}
+
+.imgback:hover {
+  transform: scale(1.1);
 }
 </style>

@@ -241,7 +241,7 @@ export default {
 .body {
   width: 100%;
   height: 100%;
-  background-image: url('../assets/picture/房子.gif');
+  background-image: url('../assets/picture/下雨.gif');
   background-size: cover; /* 设置为cover，以保持宽高比并覆盖整个屏幕 */
   background-repeat: no-repeat; /* 禁止背景图重复 */
   background-attachment: fixed; /* 固定背景图，使其在滚动时保持固定 */

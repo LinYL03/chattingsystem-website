@@ -3,51 +3,42 @@
     <div class="userContainer">
       <div class="avatarContainer">
         <el-avatar :src="avatar" :size="170"></el-avatar>
-        <el-upload
-          class="avatar-uploader"
-          :action="$apiServer + 'upload?type=1'"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeuploadButton"
-          :limit="1"
-        >
+        <div class="signature"><span>个性签名：</span>{{ userInfoForm.signature }}</div>
+        <el-upload class="avatar-uploader" :action="$apiServer + 'upload?type=1'" :show-file-list="false"
+          :on-success="handleAvatarSuccess" :before-upload="beforeuploadButton" :limit="1">
           <img v-if="isUpload" :src="preAvatar" class="avatarImg" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-        <el-button type="primary" class="uploadButton" @click="uploadAvatar"
-          >更换头像</el-button
-        >
+        <el-button type="primary" class="uploadButton" @click="uploadAvatar">更换头像</el-button>
+
       </div>
       <div class="userInfoContainer">
-        <el-form
-          label-position="top"
-          :model="userInfoForm"
-          ref="userInfoFormRef"
-        >
-          <el-form-item label="用户名">
-            <el-input v-model="userInfoForm.username" disabled></el-input>
+        <el-form label-position="top" :model="userInfoForm" ref="userInfoFormRef">
+          <el-form-item>
+            <label style="color: #ffffff;">用户名</label>
+            <el-input v-model="userInfoForm.username" :disabled="!isEditing"></el-input>
           </el-form-item>
-          <el-form-item label="个性签名">
-            <el-input
-              v-model="userInfoForm.signature"
-              prefix-icon="iconfont icon-qianming"
-            ></el-input>
+          <el-form-item>
+            <label style="color: #ffffff;">个性签名</label>
+            <el-input v-model="userInfoForm.signature" :disabled="!isEditing"></el-input>
           </el-form-item>
-          <el-form-item label="性别">
-            <el-radio :label="1" v-model="userInfoForm.sex">男</el-radio>
-            <el-radio :label="2" v-model="userInfoForm.sex">女</el-radio>
+          <el-form-item>
+            <label style="color: #ffffff;">性别</label>
+            <br>
+            <el-radio :label="1" v-model="userInfoForm.sex" :disabled="!isEditing">男</el-radio>
+            <el-radio :label="2" v-model="userInfoForm.sex" :disabled="!isEditing">女</el-radio>
           </el-form-item>
-          <el-form-item label="生日">
-            <el-date-picker
-              type="date"
-              v-model="userInfoForm.birthday"
-              style="width: 100%"
-            ></el-date-picker>
+          <el-form-item>
+            <label style="color: #ffffff;">生日</label>
+            <el-date-picker type="date" v-model="userInfoForm.birthday" style="width: 100%"
+              :disabled="!isEditing"></el-date-picker>
           </el-form-item>
         </el-form>
-        <el-button type="primary" class="userInfoButton" @click="updateUserInfo"
-          >保存</el-button
-        >
+        <div class="buttonGroup">
+          <el-button type="primary" class="userInfoButton" @click="toggleEdit">
+            {{ isEditing ? '保存' : '修改编辑' }}
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -61,6 +52,7 @@ export default {
       preAvatar: "",
       isUpload: false,
       tempUrl: "",
+      isEditing: false,
       userInfoForm: {},
     };
   },
@@ -110,44 +102,47 @@ export default {
         JSON.stringify(this.userInfoForm)
       );
     },
+    toggleEdit() {
+      if (this.isEditing) {
+        this.updateUserInfo();
+      }
+      this.isEditing = !this.isEditing;
+    },
     updateUserInfo() {
       this.$refs.userInfoFormRef.validate(async (valid) => {
         if (!valid) return;
-        const { data: res } = await this.$http.post("user/update/userinfo", {
+
+        const { data: res } = await this.$http.post(this.$apiServer + "user/update/userinfo", {
           id: this.userInfoForm.id,
           signature: this.userInfoForm.signature,
           sex: this.userInfoForm.sex,
           birthday: this.userInfoForm.birthday,
         });
+
         if (res.code !== 200) {
           return this.$message.error(res.msg);
         }
+
         this.$message.success(res.msg);
-        window.sessionStorage.setItem(
-          "userInfo",
-          JSON.stringify(this.userInfoForm)
-        );
+
+        // 更新 sessionStorage 中的用户信息
+        window.sessionStorage.setItem("userInfo", JSON.stringify(this.userInfoForm));
       });
     },
   },
 };
 </script>
-
 <style lang="less" scoped>
 .userContainer {
   display: flex;
   justify-content: space-around;
 }
-.avatarContainer {
-  width: 170px;
-  display: flex;
-  flex-direction: column;
-  margin-left: 100px;
-}
+
 .el-avatar {
   margin: 0 auto;
   margin: 40px 0;
 }
+
 .avatar-uploader {
   border: 1px dashed rgb(206, 206, 206);
   border-radius: 6px;
@@ -155,9 +150,11 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .avatar-uploader:hover {
   border-color: #409eff;
 }
+
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -166,17 +163,61 @@ export default {
   line-height: 170px;
   text-align: center;
 }
+
 .avatarImg {
   width: 170px;
   height: 170px;
   display: block;
 }
+
 .uploadButton {
   text-align: center;
   margin: 30px auto;
+  color: #eaeaea;
+  background-color: #6b7581;
+  border-color: #474848;
 }
+
 .userInfoContainer {
   width: 100%;
   margin: 30px 120px;
 }
+
+
+.avatarContainer {
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 100px;
+}
+
+.signature {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #cbbcbc;
+  text-align: center;
+  font-weight: 500;
+
+  span {
+    font-size: 16px;
+    font-weight: 700;
+  }
+}
+
+
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  margin-top: 55px;
+  align-items: center;
+}
+
+.userInfoButton {
+  // width: 18%;
+  color: #eaeaea;
+    background-color: #6b7581;
+    border-color: #474848;
+}
+
 </style>
