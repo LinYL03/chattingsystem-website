@@ -4,22 +4,16 @@ import {
   Message
 } from 'element-ui';
 
-import Home from '../views/Home.vue'
+
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
-import HomeMain from '../components/HomeMain.vue'
+
 import UserInfo from '../components/UserInfo.vue'
 import MyInfo from '../components/UserInfo/MyInfo.vue'
 import Account from '../components/UserInfo/Account.vue'
-import MyMessage from '../components/UserInfo/MyMessage.vue'
-import Dynamic from '../components/Dynamic.vue'
+
 import Chatting from '../components/Chatting.vue'
-import MusicRoom from '../components/MusicRoom.vue'
-import Music from '../components/MusicPhoto/Music.vue'
-import Scenery from '../components/MusicPhoto/Scenery.vue'
-import Cartoon from '../components/MusicPhoto/Cartoon.vue'
-import Beauty from '../components/MusicPhoto/Beauty.vue'
-import Pets from '../components/MusicPhoto/Pets.vue'
+
 import ChattingRoomNew from '../components/ChattingRoomNew.vue'
 // import ChatRoom from '../components/ChatRoom.vue'
 
@@ -30,111 +24,6 @@ Router.prototype.push = function push(location) {
 }
 
 Vue.use(Router)
-
-// const routes = [{
-//     path: '/',
-//     component: Home,
-//     meta: {
-//       requireAuth: false
-//     },
-//     children: [{
-//         path: '/',
-//         meta: {
-//           requireAuth: false
-//         },
-//         component: HomeMain
-//       }, {
-//         path: '/userinfo',
-//         component: UserInfo,
-//         meta: {
-//           requireAuth: true
-//         },
-//         children: [{
-//           path: '/userinfo/1',
-//           component: MyInfo,
-//           meta: {
-//             requireAuth: true
-//           },
-//         }, {
-//           path: '/userinfo/2',
-//           component: Account,
-//           meta: {
-//             requireAuth: true
-//           },
-//         }, {
-//           path: '/userinfo/3',
-//           component: MyMessage,
-//           meta: {
-//             requireAuth: true
-//           },
-//         }]
-//       }, {
-//         path: '/dynamic',
-//         component: Dynamic,
-//         meta: {
-//           requireAuth: false
-//         }
-//       }, {
-//         path: '/chatting',
-//         component: Chatting,
-//         meta: {
-//           requireAuth: true
-//         }
-//       }, {
-//         path: '/find',
-//         component: MusicRoom,
-//         meta: {
-//           requireAuth: false
-//         }
-//       },
-//       {
-//         path: '/music',
-//         component: Music,
-//         meta: {
-//           requireAuth: false
-//         }
-//       }, {
-//         path: '/scenery',
-//         component: Scenery,
-//         meta: {
-//           requireAuth: false
-//         }
-//       }, {
-//         path: '/pets',
-//         component: Pets,
-//         meta: {
-//           requireAuth: false
-//         }
-//       }, {
-//         path: '/cartoon',
-//         component: Cartoon,
-//         meta: {
-//           requireAuth: false
-//         }
-//       }, {
-//         path: '/beauty',
-//         component: Beauty,
-//         meta: {
-//           requireAuth: false
-//         }
-//       }
-//     ]
-//   },
-//   {
-//     path: '/login',
-//     component: Login,
-//     meta: {
-//       requireAuth: false
-//     }
-//   },
-//   {
-//     path: '/register',
-//     component: Register,
-//     meta: {
-//       requireAuth: false
-//     }
-//   }
-// ]
 
 const routes = [
   {
@@ -177,12 +66,6 @@ const routes = [
     }, {
       path: '/userinfo/2',
       component: Account,
-      meta: {
-        requireAuth: true
-      },
-    }, {
-      path: '/userinfo/3',
-      component: MyMessage,
       meta: {
         requireAuth: true
       },
