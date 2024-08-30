@@ -76,6 +76,7 @@ export default {
   border-radius: 20px;
   padding: 20px;
   margin-left: 180px;
+  
 }
 
 .menu {
