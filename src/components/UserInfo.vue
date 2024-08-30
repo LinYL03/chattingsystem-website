@@ -69,6 +69,7 @@ export default {
 
 .card {
   width: 75%;
+  height: 655.5px;
   margin: 0 auto;
   background: #1d1d30b3;
   position: fixed;

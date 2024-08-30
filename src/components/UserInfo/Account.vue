@@ -219,6 +219,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.updateEmail{
+  height: 120px;
+}
+.updatePwd{
+  height: 300px;
+}
 .accountContainer {
   margin: 0 70px 20px;
 }
@@ -262,6 +268,7 @@ export default {
 h1 {
   // text-align: center;
   color: aliceblue;
+  font-size: 25px;
 }
 .el-form-item__label{
       text-align: right;
@@ -288,6 +295,8 @@ display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+  height: 80px;
+  margin-top: 10px
 }
 
 .deletebutton {

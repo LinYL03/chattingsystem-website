@@ -898,7 +898,7 @@ export default {
     /* 子元素之间的间距 */
     gap: 10px;
     .rightDown {
-        background: var(--secondary-dark-color);
+        background: #31374575;
         border-radius: 12px;
     }
 }
@@ -955,7 +955,7 @@ export default {
         // height: 100%;
         height: 324px;
         width: 100%;
-        background: var(--secondary-dark-color);
+        background:#3137451c;
         // background: #fff;
         border-radius: 12px;
 
@@ -1233,7 +1233,7 @@ export default {
         width: 100%;
         background: var(--secondary-dark-color);
         // background: yellow;
-        border-radius: 12px;
+        border-radius: 0 0 12px 12px;
 
         // 子元素可以此为定位元素
         position: relative;
@@ -1241,6 +1241,7 @@ export default {
         display: flex;
         align-items: center;
         flex-direction: column;
+        padding-top: 8px;
         .icon {
             width: 96%;
             height: 30px;
