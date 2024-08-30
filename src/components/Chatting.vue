@@ -189,10 +189,10 @@ export default {
     sendOffer(data, isGroup) {
       const { username, avatar, sid } = this.user;
       const tosid = this.sid;
-      console.log("sendOffer 发送到父组件的数据如下", data);
-      console.log("sendOffer 发送方的名字，头像，sid", { username, avatar, sid });
-      console.log("sendOffer 发送到父组件的数据如下", tosid);
-      console.log("sendOffer 发送到父组件的数据如下", isGroup);
+      // console.log("sendOffer 发送到父组件的数据如下", data);
+      // console.log("sendOffer 发送方的名字，头像，sid", { username, avatar, sid });
+      // console.log("sendOffer 发送到父组件的数据如下", tosid);
+      // console.log("sendOffer 发送到父组件的数据如下", isGroup);
       if (isGroup) {
         console.log("等会实现");
       } else {
