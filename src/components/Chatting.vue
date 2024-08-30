@@ -14,46 +14,13 @@
       @endCall="endCall"
       />
     </div>
-    <!-- <div>1234565</div> -->
-    <!-- <div class="null">
-      <room2
-      :user="user"
-      :userList="userList"
-      ref="chatroom"
-      @sendServer="sendServer"
-      @handleFile="handleFile"
-      @activeSid="activeSid" />
-    </div> -->
-    <!-- <div class="avatar">
-      <el-avatar :size="70" :src="avatar" @click.native="UserInfo1"></el-avatar>
-      <div class="UserInfo">
-        <ul>
-          <li>
-            <span>当前登录用户:</span>
-            <span class="loginName">{{ username }}</span>
-          </li>
-          <li @click="UserInfo1">
-            <i class="iconfont">&#xe61d;</i>个人资料
-          </li>
-          <li @click="UserInfo2">
-            <i class="iconfont">&#xe66d;</i>账号安全
-          </li>
-          <li @click="UserInfo3">
-            <i class="iconfont">&#xe646;</i>我的消息
-          </li>
-          <li @click="loginOut">
-            <i class="iconfont">&#xe71e;</i>退出登录
-          </li>
-        </ul>
-      </div>
-    </div> -->
+  
   </div>
 </template>
 
 <script>
 import Room from "./ChattingRoomNew";
-import Room2 from "./Null";
-// import Room from "./ChatRoom";
+
 // 引入socket.io-client
 import io from "socket.io-client";
 export default {
@@ -270,7 +237,7 @@ export default {
   height: 588px;
   margin: 0 auto;
   border: none;
-  opacity: 0.9;
+  // opacity: 0.9;
   // background: #eee;
 }
 

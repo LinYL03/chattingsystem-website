@@ -712,7 +712,7 @@ export default {
 .chatBox {
     width: 100%;
     height: 100%;
-    background: var(--main-dark-color);
+    background: #1d1d30d1;
     border-radius: 12px;
     // overflow: hidden; /* 隐藏超出圆角部分的内容 */
 
@@ -1455,13 +1455,12 @@ export default {
 
         .send-btn {
             position: absolute;
-            width: 120px;
-            height: 40px;
-            bottom: 8px;
-            right: 16px;
-
+            width: 90px;
+            height: 38px;
+            bottom: 5px;
+            right: 15px;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 9px;
             // padding: 4px 10px;
             background-color: #f5f5f5;
             border: 1px solid transparent;
