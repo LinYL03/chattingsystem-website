@@ -418,6 +418,7 @@ export default {
             console.log("准备录制");
             try {
                 // 请求用户的音频权限并获取音频流
+                console.log('navigator.mediaDevices:', navigator.mediaDevices);
                 console.log("请求音频权限...");
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 console.log("获取音频流成功");
@@ -521,6 +522,7 @@ export default {
                 };
                 this.pc = new RTCPeerConnection(configuration);
 
+                // 出现一个新的 ICE 候选者时，会触发这个事件
                 this.pc.onicecandidate = (event) => {
                     if (event.candidate) {
                         this.$emit("sendIceCandidate", {
@@ -529,50 +531,53 @@ export default {
                             sdpMid: event.candidate.sdpMid,
                             sdpMLineIndex: event.candidate.sdpMLineIndex,
                         }, this.isGroup);
-                        console.log("sendIceCandidate");
+                        // console.log("sendIceCandidate");
                     }
                 };
 
+                // 当远程对等端的媒体轨道（音频或视频）添加到连接中时，会触发这个事件。
                 this.pc.ontrack = (event) => {
+                    console.log("接收到远程视频流轨道:", event);
                     this.remoteStream = event.streams[0];
                     const remoteVideoElement = document.getElementById("remoteVideo");
                     remoteVideoElement.srcObject = this.remoteStream;
                     remoteVideoElement.play();
-                    console.log("处理远程流");
+                    console.log("远程视角应该有画面了");
                 };
             }
         },
         async startVideo(){
             this.showVideoBox = true;
-            this.$message.success("开始视频通话");
+            this.$message.success("发起方：开始视频通话");
             try {
                 // 获取本地音频流
                 this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                console.log("音频获取成功!!!");
 
                 // 在页面上显示本地视频
                 const localVideoElement = document.getElementById("localVideo");
                 localVideoElement.srcObject = this.localStream;
                 localVideoElement.play();
+                console.log("1 发起方：本地视频开始播放!!!");
 
                 this.ensurePeerConnection();
 
                 // 添加本地音频轨道到RTCPeerConnection
                 // 让本地音频（即你麦克风捕获的声音）通过WebRTC的连接发送到远程用户
                 this.localStream.getTracks().forEach(track => {
+                    // console.log("本地音频轨道发送到远程用户");
                     this.pc.addTrack(track, this.localStream);
                 });
 
                 // 创建Offer并发送给对方
                 const offer = await this.pc.createOffer();
                 await this.pc.setLocalDescription(offer);
+                console.log("2 发起方：正在等待对方接受通话请求...");
                 this.$emit("sendOffer", { type: "offer", sdp: offer.sdp }, this.isGroup);
-                console.log("正在等待对方接受通话请求...");
 
-                this.$message.success("正在等待对方接受通话请求...");
+                // this.$message.success("正在等待对方接受通话请求...");
             } catch (error) {
-                console.error("无法开始视频通话:", error);
-                console.error("错误详情:", error.name, error.message);
+                console.error("发起方：无法开始视频通话:", error);
+                console.error("发起方：错误详情:", error.name, error.message);
             }
         },
         endVideo() {
@@ -619,61 +624,71 @@ export default {
         // 接收并处理对方的Answer
         async handleAnswer(answer) {
             this.showVideoBox1 = true;
-            if (!this.pc)
+            if (!this.pc) {
+                // console.log("handleAnswer函数: ", answer);
                 // 创建RTCPeerConnection对象
                 this.ensurePeerConnection();
+            }
 
             if (answer && answer.type && answer.sdp) {
                 const remoteDesc = new RTCSessionDescription(answer);
                 await this.pc.setRemoteDescription(remoteDesc);
-                this.$message.success("通话已连接");
-                console.log("接收并处理对方的Answer");
+                // this.$message.success("通话已连接");
+                console.log("5 发送方：接收并处理对方的Answer");
             } else {
                 console.error("无效的回复数据格式:", answer);
             }
         },
         // 接收并处理ICE候选者
         async handleIceCandidate(candidate) {
-            if (!this.pc)
-                // 创建RTCPeerConnection对象
+            // if (!this.pc)
+            //     // 创建RTCPeerConnection对象
                 this.ensurePeerConnection();
             if (candidate) {
-                await this.pc.addIceCandidate(new RTCIceCandidate(candidate));
+                try {
+                    await this.pc.addIceCandidate(new RTCIceCandidate(candidate));
+                    // console.log("ICE候选者已成功添加:", candidate);
+                    } catch (error) {
+                        // console.error("添加ICE候选者失败:", error);
+                    }
             }
         },
         // 处理Offer并返回Answer
         handleOffer(offer) {
-            console.log(offer.username, " 申请与你连接视频, 是否同意？");
+            console.log("3 接收方：", offer.username, " 申请与你连接视频, 是否同意？");
             this.showVideoBox1 = true;
             this.start_offer = offer;
+            this.startTalk();
         },
         async startTalk() {
             this.showVideoBox = true;
             try {
-                if (!this.pc)
-                    // 创建RTCPeerConnection对象
-                    this.ensurePeerConnection();
-
                 // 获取本地音频流
                 this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                console.log("接收方: 音频获取成功!!!");
 
                 // 在页面上显示本地视频
                 const localVideoElement = document.getElementById("localVideo");
                 localVideoElement.srcObject = this.localStream;
                 localVideoElement.play();
+                console.log("4 接收方：本地视频开始播放!!!");
+
+                this.ensurePeerConnection();
 
                 // 添加本地音频轨道到RTCPeerConnection
+                // 让本地音频（即你麦克风捕获的声音）通过WebRTC的连接发送到远程用户
                 this.localStream.getTracks().forEach(track => {
                     this.pc.addTrack(track, this.localStream);
                 });
 
+                // console.log("type: ", this.start_offer.data.type);
                 await this.pc.setRemoteDescription(new RTCSessionDescription({ type: "offer", sdp: this.start_offer.data.sdp }));
                 const answer = await this.pc.createAnswer();
                 await this.pc.setLocalDescription(answer);
                 this.$emit("sendAnswer", { type: "answer", sdp: answer.sdp }, this.isGroup);
+                // this.$message.success("正在等待对方接受通话请求...");
             } catch (error) {
-                console.error("无法处理Offer:", error);
+                console.error("无法开始视频通话:", error);
+                console.error("错误详情:", error.name, error.message);
             }
         },
     },

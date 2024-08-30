@@ -4,7 +4,7 @@
       <div class="avatarContainer">
         <el-avatar :src="avatar" :size="170"></el-avatar>
         <div class="signature"><span>个性签名：</span>{{ userInfoForm.signature }}</div>
-        <el-upload class="avatar-uploader" :action="$apiServer + 'upload?type=1'" :show-file-list="false"
+        <el-upload ref="avatarUploader" class="avatar-uploader" :action="this.$apiServer + 'upload?type=1'" :show-file-list="false"
           :on-success="handleAvatarSuccess" :before-upload="beforeuploadButton" :limit="1">
           <img v-if="isUpload" :src="preAvatar" class="avatarImg" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -77,6 +77,7 @@ export default {
       return (isJPG1 || isJPG2 || isJPG3) && isLt2M;
     },
     handleAvatarSuccess(res, file) {
+      console.log("正在上传……");
       this.isUpload = true;
       this.preAvatar = URL.createObjectURL(file.raw);
       this.tempUrl = res;
@@ -94,9 +95,12 @@ export default {
       }
       this.$message.success(res.msg);
       this.avatar = res.url;
-      this.isUpload = false;
       this.userInfoForm.avatar = this.avatar;
       this.$store.commit("setAvatar", this.avatar);
+      // 重置上传状态 以便可以重复修改头像
+      this.isUpload = false;
+      this.preAvatar = "";
+      this.$refs.avatarUploader.clearFiles();
       window.sessionStorage.setItem(
         "userInfo",
         JSON.stringify(this.userInfoForm)
