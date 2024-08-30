@@ -77,9 +77,13 @@ export default {
       login() {
           this.$refs.loginFormRef.validate(async (valid) => {
               if (!valid) return;
+
+              this.$message.success("提交前")
               const { data: res } = await this.$http.post("login", {
                   params: this.loginForm,
               });
+              this.$message.success("提交后")
+
               if (res.code !== 200) {
                   return this.$message.error(res.msg);
               }
