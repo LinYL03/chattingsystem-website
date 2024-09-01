@@ -90,7 +90,7 @@ export default {
               this.$message.success(res.msg);
               window.sessionStorage.setItem("token", res.token);
               window.sessionStorage.setItem("userInfo", JSON.stringify(res.data));
-              // this.$router.push("/chatting");
+            
               // 新的聊天室页面
               this.$router.push("/chat");
           });

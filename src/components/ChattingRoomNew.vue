@@ -175,6 +175,7 @@ export default {
         console.log("pageWidth: ", this.pageWidth, "pageHeight: ", this.pageHeight);
         window.addEventListener('resize', this.handleResize);
         this.updateDimensions(); // 初始化时设置尺寸
+      
     },
     updated() {
         // 聊天定位到底部
@@ -691,8 +692,11 @@ export default {
                 console.error("错误详情:", error.name, error.message);
             }
         },
+        
     },
+    
 };
+
 </script>
 
 <style lang="less" scoped>
