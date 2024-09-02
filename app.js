@@ -44,6 +44,11 @@ app.use('/node_modules', express.static(path.join(__dirname, '/node_modules')))
 
 //为所有源启用跨域
 app.use(cors());
+// app.use(cors({
+//   origin: '*', // 允许所有来源的请求
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 允许的请求方法
+//   allowedHeaders: ['Content-Type', 'Authorization'] // 允许的请求头
+// }));
 //设置跨域访问
 // app.all('*', function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
@@ -54,16 +59,32 @@ app.use(cors());
 //   next();
 // });
 
+let localIp = 'localhost'; // 默认值
+// 获取局域网IP地址并设置为 BASE_URL
+const os = require('os');
+const networkInterfaces = os.networkInterfaces();
+for (const iface in networkInterfaces) {
+  for (const alias of networkInterfaces[iface]) {
+    if (alias.family === 'IPv4' && !alias.internal) {  // 查找IPv4且非内部地址
+      localIp = alias.address; // 找到第一个局域网IP地址
+      break;
+    }
+  }
+}
+
+global.BASE_URL = `http://${localIp}:4000`;
+
 // 定义全局域名变量
 // global.BASE_URL = 'http://8.129.128.30:4000'
-global.BASE_URL = 'http://localhost:4000'
+// global.BASE_URL = 'http://localhost:4000'
+
 app.use(router);
 
 //创建socket.io
 let io = require('socket.io')(server);
 require('./util/socket')(io);
 
-server.listen(4000, function () {
+server.listen(4000, '0.0.0.0', function () {
   // console.log("服务器已启动");
   console.log(`服务器已启动在 ${global.BASE_URL}/`);
 });
