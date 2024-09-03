@@ -32,19 +32,19 @@ export default {
       switch (key) {
         case "1":
           if (this.activeIndex === "1") return;
-          this.$router.push("/userinfo/1");
+          this.$router.push("/userinfo/my-info");
           break;
         case "2":
           if (this.activeIndex === "2") return;
-          this.$router.push("/userinfo/2");
+          this.$router.push("/userinfo/my-account");
           break;
       }
     },
     getRoutePath() {
       const path = this.$route.path;
-      if (path === "/userinfo/1") {
+      if (path === "/userinfo/my-info") {
         this.activeIndex = "1";
-      } else if (path === "/userinfo/2") {
+      } else if (path === "/userinfo/my-account") {
         this.activeIndex = "2";
       }
     },
@@ -58,26 +58,33 @@ export default {
 <style lang="less" scoped>
 .userinfo {
   width: 100%;
-  height: 96.2%;
+  height: 100%;
   background-image: url('../assets/picture/下雨.gif');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-size: cover; /* 设置为cover，以保持宽高比并覆盖整个屏幕 */
+  background-repeat: no-repeat; /* 禁止背景图重复 */
+  background-attachment: fixed; /* 固定背景图，使其在滚动时保持固定 */
   object-fit: cover;
-  padding-top: 30px;
+
+  // // 水平垂直对齐
+  display: flex;             /* 设置为 Flexbox 布局 */
+  justify-content: center;   /* 水平居中 */
+  align-items: center;       /* 垂直居中 */
+  // background: #000;
 }
 
 .card {
   width: 75%;
   height: 655.5px;
-  margin: 0 auto;
+  // 聊天室大小
+  // width: 1200px;
+  // height: 588px;
+  // margin: 0 auto;
   background: #1d1d30b3;
   position: fixed;
   border: 1px solid #182b57;
   border-radius: 20px;
   padding: 20px;
-  margin-left: 180px;
-  
+  // background: #000;
 }
 
 .menu {

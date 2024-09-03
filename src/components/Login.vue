@@ -78,11 +78,11 @@ export default {
           this.$refs.loginFormRef.validate(async (valid) => {
               if (!valid) return;
 
-              this.$message.success("提交前")
+              // this.$message.success("用户信息提交之前")
               const { data: res } = await this.$http.post("login", {
                   params: this.loginForm,
               });
-              this.$message.success("提交后")
+              // this.$message.success("用户信息提交之后")
 
               if (res.code !== 200) {
                   return this.$message.error(res.msg);
@@ -90,7 +90,7 @@ export default {
               this.$message.success(res.msg);
               window.sessionStorage.setItem("token", res.token);
               window.sessionStorage.setItem("userInfo", JSON.stringify(res.data));
-            
+              console.log("userInfo: ", JSON.stringify(res.data));
               // 新的聊天室页面
               this.$router.push("/chat");
           });
@@ -219,7 +219,8 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: #ef5c0d;
+  // background-color: #ef5c0d;
+  background-color: #e08907;
   /* background-color: #000; */
   transition: left 0.5s ease;
 }
@@ -254,7 +255,6 @@ export default {
   color: #fff; /* 按钮文字颜色 */
   font-size: 14px; /* 按钮文字大小 */
   font-weight: bold; /* 按钮文字加粗 */
-  transition: background 0.3s ease; /* 背景色过渡效果 */
 }
 
 .btn2 button,
@@ -271,12 +271,14 @@ export default {
   cursor: pointer; /* 鼠标悬停时手型 */
   position: relative;
   z-index: 1; /* 确保文本在最上层 */
+  transition: background 0.3s ease; /* 背景色过渡效果 */
 }
 
 .btn2 button:hover,
 .btn3 button:hover {
   // background: linear-gradient(to right, #4a8bd1, #9b8dfc); /* 悬停时渐变背景色加深 */
   background-color: #e08907;
+  // background-color: orange;
 }
 
 // 更新的样式

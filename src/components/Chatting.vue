@@ -4,6 +4,7 @@
       <room
       :user="user"
       :userList="userList"
+      :sign="sign"
       ref="chatroom"
       @sendServer="sendServer"
       @handleFile="handleFile"
@@ -14,7 +15,6 @@
       @endCall="endCall"
       />
     </div>
-  
   </div>
 </template>
 
@@ -44,6 +44,7 @@ export default {
     this.avatar = userInfo.avatar;
     this.username = userInfo.username;
     this.uid = userInfo.id;
+    this.sign = userInfo.signature;
   },
   mounted() {
     /**
