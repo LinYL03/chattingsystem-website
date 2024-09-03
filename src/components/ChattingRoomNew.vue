@@ -11,7 +11,7 @@
                 </div>
                 <div class="leftDown">
                     <span>聊天列表</span>
-                    <div class="group" @click="chooseGroup" :class="{ 'active-user': isGroup }">
+                    <div class="group" @click="chooseGroup" :class="{'active-user': isGroup}">
                         <img src="../assets/picture/ChatforGroup.svg" alt="" />
                         <span>群聊</span>
                     </div>
@@ -20,7 +20,7 @@
                         <div class="nousers" v-if="userList.length === 1"><span>没有其他用户</span></div>
                         <div class="userBox" v-for="(item, index) in userList" :key="index"
                             v-if="item.username !== user.username" @click="chooseUser(item, index)"
-                            :class="{ 'active-user': active === index && isGroup === false }">
+                            :class="{'active-user': active === index && isGroup === false}">
                             <div class="avatar"><img :src="item.avatar" alt=""></div>
                             <div class="username"><span>{{ item.username }}</span></div>
                         </div>
@@ -37,11 +37,10 @@
                     <div class="chatArea">
                         <ul class="join" ref="joinUs">
                             <li v-for="(item1, index) in messageContent" :key="index" :class="{
-                        'my-message': item1.type === 1 ? true : false,
-                        'other-message': item1.type === 2 ? true : false,
-                        'my-audio-message': item1.type === 5 ? true : false,
-                        'other-audio-message': item1.type === 6 ? true : false,
-                    }">
+                                'my-message': item1.type === 1 ? true : false,
+                                'other-message': item1.type === 2 ? true : false,
+                                'my-audio-message': item1.type === 5 ? true : false,
+                                'other-audio-message': item1.type === 6 ? true : false,}">
                                 <div v-if="item1.type === 3">欢迎{{ item1.username }}加入聊天室</div>
                                 <div v-if="item1.type === 4">{{ item1.username }}离开了聊天室</div>
                                 <div v-if="item1.type === 1">
@@ -71,7 +70,7 @@
 
                                 <div v-if="item1.type === 5">
                                     <div class="message">
-                                        <span @click="playAudioFromBase64(item1.msg)">语音 </span>
+                                        <span @click="playAudioFromBase64( item1.msg )">语音 </span>
                                         <img :src="item1.avatar" class="avatar" />
                                     </div>
                                 </div>
@@ -79,7 +78,7 @@
                                     <div class="message">
                                         <img :src="item1.avatar" class="avatar" />
                                         <span class="username">{{ item1.username }}</span>
-                                        <span class="content" @click="playAudioFromBase64(item1.msg)"> 语音 </span>
+                                        <span class="content" @click="playAudioFromBase64( item1.msg )"> 语音 </span>
                                     </div>
                                 </div>
                             </li>
@@ -169,12 +168,11 @@ export default {
             pc: null, // RTCPeerConnection对象
             localStream: null, // 本地音频流
             remoteStream: null, // 远程音频流
+            showVideoBox: false, // 展示自己视频的容器
+            showVideoBox1: false, // 展示别人视频的容器
 
-            showVideoBox: false, // 默认隐藏本地视频大窗口
-            showVideoBox1: false, // 默认隐藏远程视频大窗口
-            showSmallVideoBox: false, // 默认隐藏小窗口
-            showSmallLocal: true, // 默认小窗口显示远程视频
-            isReceiver: false, // 用于区分是否为接收通话者
+            currentView: 'local', // 'local' 或 'remote'，表示当前大窗口的视角
+
             // 容器可拖动
             DragEl: null,//拖动元素
             dragContainerEl: null,//容器元素
@@ -243,46 +241,53 @@ export default {
             this.disX = event.clientX - this.DragEl.offsetLeft;
             this.disY = event.clientY - this.DragEl.offsetTop;
 
-            //2， 获取拖动元素的高度和容器的高度 为了下面进行限制元素拖动的范围
+            // 2. 获取拖动元素和小窗口的高度、宽度
             let dragHeight = this.DragEl.offsetHeight;
             let dragWidth = this.DragEl.offsetWidth;
 
+            // 小窗口元素
+            const smallWindowEl = document.getElementById('Drag1');
+            let smallWindowOffsetX = smallWindowEl.offsetLeft - this.DragEl.offsetLeft;
+            let smallWindowOffsetY = smallWindowEl.offsetTop - this.DragEl.offsetTop;
+
             // 添加鼠标移动事件
             document.onmousemove = (el) => {
-                // console.log("el: ", el)
                 let moveX = el.clientX - this.disX;
                 let moveY = el.clientY - this.disY;
+
                 // 限制拖动范围在整个页面内
                 const pageWidth = window.innerWidth;
                 const pageHeight = window.innerHeight;
-                // console.log("moveX :", moveX, "moveY :", moveY);
-                // 4，限制拖动
+
+                // 4. 限制拖动
                 if (moveX <= 0) {
                     moveX = 0;
                 }
-                // 上边界
                 if (moveY <= 0) {
                     moveY = 0;
                 }
-                //下边界  容器高度 - 拖动元素高度
                 if (moveX >= pageWidth - dragWidth) {
                     moveX = pageWidth - dragWidth;
                 }
-                //右边界   容器宽度 - 拖动元素宽度
                 if (moveY >= pageHeight - dragHeight) {
                     moveY = pageHeight - dragHeight;
                 }
 
-                // 5, 开始移动
+                // 5. 移动大窗口
                 this.DragEl.style.left = moveX + "px";
                 this.DragEl.style.top = moveY + "px";
+
+                // 6. 移动小窗口（保持相对位置不变）
+                smallWindowEl.style.left = moveX + smallWindowOffsetX + "px";
+                smallWindowEl.style.top = moveY + smallWindowOffsetY + "px";
             };
 
-            /* 6，鼠标抬起解除事件 */
+            // 7. 鼠标抬起解除事件
             document.onmouseup = () => {
                 document.onmousemove = null;
             };
         },
+
         // 监听键盘按下事件
         handlePress(e) {
             if (e.ctrlKey && e.keyCode == 13) {
@@ -543,6 +548,31 @@ export default {
                     console.error("音频播放错误:", error);
                 });
         },
+        switchVideoViews() {
+            if (this.currentView === 'local') {
+                // 将大窗口视角切换到远程视角
+                const localVideoElement = document.getElementById("localVideo");
+                const remoteVideoElement = document.getElementById("remoteVideo");
+
+                localVideoElement.srcObject = remoteVideoElement.srcObject;
+                remoteVideoElement.srcObject = this.localStream;
+
+                // 更新当前视角
+                this.currentView = 'remote';
+                console.log("切换了视角");
+            } else {
+                // 将大窗口视角切换到本地视角
+                const localVideoElement = document.getElementById("localVideo");
+                const remoteVideoElement = document.getElementById("remoteVideo");
+
+                remoteVideoElement.srcObject = localVideoElement.srcObject;
+                localVideoElement.srcObject = this.remoteStream;
+
+                // 更新当前视角
+                this.currentView = 'local';
+                console.log("切换了视角");
+            }
+        },
         ensurePeerConnection() {
             if (!this.pc) {
                 const configuration = {
@@ -578,42 +608,56 @@ export default {
                 };
             }
         },
-        async startVideo() {
-            this.isReceiver = false;
+        async startVideo(){
             this.showVideoBox = true;
-            this.showSmallVideoBox = true;
+            this.$message.success("发起方：开始视频通话");
             try {
+                // 获取本地音频流
                 this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('localVideo').srcObject = this.localStream;
 
-                // 确保小窗口显示对方视频
-                document.getElementById('smallRemoteVideo').srcObject = this.remoteStream;
-                
-                document.getElementById('localVideo').play();  // 强制播放视频
-
-                // 小窗口的视频流初始化
-               
-                document.getElementById('smallRemoteVideo').play();  // 强制播放视频
+                // 在页面上显示本地视频
+                const localVideoElement = document.getElementById("localVideo");
+                localVideoElement.srcObject = this.localStream;
+                localVideoElement.play();
+                console.log("1 发起方：本地视频开始播放!!!");
 
                 this.ensurePeerConnection();
-                this.localStream.getTracks().forEach(track => this.pc.addTrack(track, this.localStream));
+
+                // 添加本地音频轨道到RTCPeerConnection
+                // 让本地音频（即你麦克风捕获的声音）通过WebRTC的连接发送到远程用户
+                this.localStream.getTracks().forEach(track => {
+                    // console.log("本地音频轨道发送到远程用户");
+                    this.pc.addTrack(track, this.localStream);
+                });
+
+                // 创建Offer并发送给对方
                 const offer = await this.pc.createOffer();
                 await this.pc.setLocalDescription(offer);
+                console.log("2 发起方：正在等待对方接受通话请求...");
                 this.$emit("sendOffer", { type: "offer", sdp: offer.sdp }, this.isGroup);
+
+                // this.$message.success("正在等待对方接受通话请求...");
             } catch (error) {
-                console.error("无法开始视频通话:", error);
+                console.error("发起方：无法开始视频通话:", error);
+                console.error("发起方：错误详情:", error.name, error.message);
             }
         },
         endVideo() {
-            this.showVideoBox = false;
+            // 接收方取消视频
             this.showVideoBox1 = false;
-            this.showSmallVideoBox = false;
+            this.showVideoBox = false;
+
+            // 停止所有的媒体流轨道
             if (this.localStream) {
-                this.localStream.getTracks().forEach(track => track.stop());
+                this.localStream.getTracks().forEach(track => {
+                    track.stop();
+                });
             }
-            if (this.remoteStream) {
-                this.remoteStream.getTracks().forEach(track => track.stop());
-            }
+
+            // 发送一个结束视频通话的信号给对方
+            this.$emit("endCall", { type: "endCall" }, this.isGroup);
+
+            // 关闭 RTCPeerConnection
             if (this.pc) {
                 this.pc.close();
                 this.pc = null;
@@ -672,14 +716,14 @@ export default {
         async handleIceCandidate(candidate) {
             // if (!this.pc)
             //     // 创建RTCPeerConnection对象
-            this.ensurePeerConnection();
+                this.ensurePeerConnection();
             if (candidate) {
                 try {
                     await this.pc.addIceCandidate(new RTCIceCandidate(candidate));
                     // console.log("ICE候选者已成功添加:", candidate);
-                } catch (error) {
-                    // console.error("添加ICE候选者失败:", error);
-                }
+                    } catch (error) {
+                        // console.error("添加ICE候选者失败:", error);
+                    }
             }
         },
         // 处理Offer并返回Answer
@@ -691,33 +735,39 @@ export default {
             this.startTalk();
         },
         async startTalk() {
-            this.isReceiver = true;
-            this.showVideoBox1 = true;
-            this.showSmallVideoBox = true;
+            this.showVideoBox = true;
             try {
+                // 获取本地音频流
                 this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('remoteVideo').srcObject = this.remoteStream;
-                document.getElementById('smallRemoteVideo').srcObject = this.remoteStream;
-                document.getElementById('localVideo').srcObject = this.localStream;
-                document.getElementById('localVideo').play();  // 强制播放视频
 
-                // 小窗口的视频流初始化
-                
-                document.getElementById('smallRemoteVideo').play();  // 强制播放视频
+                // 在页面上显示本地视频
+                const localVideoElement = document.getElementById("localVideo");
+                localVideoElement.srcObject = this.localStream;
+                localVideoElement.play();
+                console.log("4 接收方：本地视频开始播放!!!");
 
                 this.ensurePeerConnection();
-                this.localStream.getTracks().forEach(track => this.pc.addTrack(track, this.localStream));
+
+                // 添加本地音频轨道到RTCPeerConnection
+                // 让本地音频（即你麦克风捕获的声音）通过WebRTC的连接发送到远程用户
+                this.localStream.getTracks().forEach(track => {
+                    this.pc.addTrack(track, this.localStream);
+                });
+
+                // console.log("type: ", this.start_offer.data.type);
                 await this.pc.setRemoteDescription(new RTCSessionDescription({ type: "offer", sdp: this.start_offer.data.sdp }));
                 const answer = await this.pc.createAnswer();
                 await this.pc.setLocalDescription(answer);
                 this.$emit("sendAnswer", { type: "answer", sdp: answer.sdp }, this.isGroup);
+                // this.$message.success("正在等待对方接受通话请求...");
             } catch (error) {
                 console.error("无法开始视频通话:", error);
+                console.error("错误详情:", error.name, error.message);
             }
         },
-
+        
     },
-
+    
 };
 
 </script>
@@ -1511,17 +1561,18 @@ export default {
         }
 
         .icon .video-box1 {
-            z-index: 999;
-            display: flex;
-            /* 水平居中 */
-            justify-content: center;
-            /* 垂直居中 */
-            align-items: center;
-
-            position: fixed; // 相对于页面定位
-            width: 350px;
-            height: 600px;
-            background: #fff;
+                z-index: 999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: fixed;
+                width: 109px;
+                height: 156px;
+                background: #fff;
+                left: 1018px;
+                top: 90px;
+                cursor: pointer;
+                    /* 鼠标悬停时显示手型 */
 
             left: calc((var(--page-width) - 800px) / 2);
             top: calc((var(--page-height) - 600px) / 2);
@@ -1623,64 +1674,5 @@ export default {
     }
 
 }
-.video-container {
-    position: relative;
-}
 
-.video-box,
-.video-box1 {
-    position: fixed;
-    width: 350px;
-    height: 600px;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-}
-
-.video-box {
-    left: calc((var(--page-width) + 100px) / 2);
-    top: calc((var(--page-height) - 600px) / 2);
-}
-
-.video-box1 {
-    left: calc((var(--page-width) - 800px) / 2);
-    top: calc((var(--page-height) - 600px) / 2);
-}
-
-.localVideo,
-.remoteVideo {
-    flex-grow: 1;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-
-
-/* 小窗口样式 */
-.small-video-box {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    width: 120px;
-    height: 90px;
-    background: black;
-    border: 2px solid white;
-    border-radius: 8px;
-    overflow: hidden;
-    z-index: 1000;
-    cursor: pointer;
-}
-
-.small-localVideo,
-.small-remoteVideo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.hidden {
-    display: none;
-}
 </style>
