@@ -99,35 +99,15 @@
                             <div class="audio-box" v-show="audioShow">正在录制...<img src="../assets/img/录音中.png"
                                     style="width: 70px;margin-top: 12px;"></div>
                             <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo" v-show="!isGroup">
-
-                            <div class="video-container">
-                                <!-- 大窗口显示本地视频 (发起通话者) -->
-                                <div class="video-box" v-show="showVideoBox && !isReceiver" id="videoBox">
-                                    <video class="localVideo" id="localVideo" autoplay muted></video>
-                                    <div class="end-video-container">
-                                        <img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn">
-                                    </div>
-                                </div>
-
-                                <!-- 大窗口显示远程视频 (接收通话者) -->
-                                <div class="video-box1" v-show="showVideoBox1 && isReceiver" id="videoBox1">
-                                    <video class="remoteVideo" id="remoteVideo" autoplay></video>
-                                    <div class="end-video-container">
-                                        <img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn">
-                                    </div>
-                                    <div class="start-video-container">
-                                        <img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn">
-                                    </div>
-                                </div>
-
-                                <!-- 右上角的小窗口 -->
-                                <div class="small-video-box" v-show="showSmallVideoBox" @click="toggleView"
-                                    id="smallVideoBox">
-                                    <video class="small-localVideo" id="smallLocalVideo" autoplay muted
-                                        v-show="showSmallLocal"></video>
-                                    <video class="small-remoteVideo" id="smallRemoteVideo" autoplay
-                                        v-show="!showSmallLocal"></video>
-                                </div>
+                            <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
+                                <video class="localVideo" id="localVideo" autoplay muted></video>
+                                <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
+                                <div><img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn"></div>
+                            </div>
+                            <div class="video-box1" v-show="showVideoBox1" @mousedown="mousedown($event)" id="Drag1"
+                                @click="switchVideoViews">
+                                <!-- <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div> -->
+                                <video class="remoteVideo" id="remoteVideo" autoplay></video>
                             </div>
                         </div>
                         <textarea cols="80" rows="5" ref="textarea" @keydown.enter="handlePress"></textarea>
@@ -662,19 +642,20 @@ export default {
                 this.pc.close();
                 this.pc = null;
             }
-            this.$emit("endCall", { type: "endCall" }, this.isGroup);
+
+            this.$message.success("视频通话结束");
         },
-        toggleView() {
-            this.showSmallLocal = !this.showSmallLocal;
-            // 切换本地和远程视频在大窗口和小窗口的显示
-            if (this.isSwitched) {
-                document.getElementById('videoBox').srcObject = this.remoteStream;
-                document.getElementById('smallLocalVideo').srcObject = this.localStream;
-            } else {
-                document.getElementById('videoBox').srcObject = this.localStream;
-                document.getElementById('smallRemoteVideo').srcObject = this.remoteStream;
-            }
-        },
+        // toggleView() {
+        //     this.showSmallLocal = !this.showSmallLocal;
+        //     // 切换本地和远程视频在大窗口和小窗口的显示
+        //     if (this.isSwitched) {
+        //         document.getElementById('videoBox').srcObject = this.remoteStream;
+        //         document.getElementById('smallLocalVideo').srcObject = this.localStream;
+        //     } else {
+        //         document.getElementById('videoBox').srcObject = this.localStream;
+        //         document.getElementById('smallRemoteVideo').srcObject = this.remoteStream;
+        //     }
+        // },
 
         handleEndCall() {
             this.showVideoBox = false;
@@ -765,9 +746,7 @@ export default {
                 console.error("错误详情:", error.name, error.message);
             }
         },
-        
     },
-    
 };
 
 </script>
@@ -1534,27 +1513,32 @@ export default {
             height: 600px;
             background: #fff;
 
-            left: calc((var(--page-width) + 100px) / 2);
-            top: calc((var(--page-height) - 600px) / 2);
-
+            left: 777px;
+            top: 90px;
             // cursor: move; /* 鼠标悬停时显示移动光标 */
             .localVideo {
-                flex-grow: 1;
-                /* 使视频占据所有可用空间 */
+                flex-grow: 1; /* 使视频占据所有可用空间 */
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
-                /* 保持视频内容比例填充容器 */
+                object-fit: cover; /* 保持视频内容比例填充容器 */
             }
-
             .end-video-btn {
                 position: absolute;
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
 
-                right: 160px;
-                bottom: 40px;
+                right: 75px;
+                bottom: 57px;
+                z-index: 1000; /* 确保按钮在视频之上 */
+            }
+            .start-video-btn {
+                position: absolute;
+                width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    right: 232px;
+                    bottom: 57px;
                 z-index: 1000;
                 /* 确保按钮在视频之上 */
             }
@@ -1574,19 +1558,12 @@ export default {
                 cursor: pointer;
                     /* 鼠标悬停时显示手型 */
 
-            left: calc((var(--page-width) - 800px) / 2);
-            top: calc((var(--page-height) - 600px) / 2);
-
-            // left: 200px;
             .remoteVideo {
-                flex-grow: 1;
-                /* 使视频占据所有可用空间 */
+                flex-grow: 1; /* 使视频占据所有可用空间 */
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
-                /* 保持视频内容比例填充容器 */
+                object-fit: cover; /* 保持视频内容比例填充容器 */
             }
-
             .end-video-btn {
                 position: absolute;
                 width: 50px;
@@ -1595,20 +1572,7 @@ export default {
 
                 right: 70px;
                 bottom: 40px;
-                z-index: 1000;
-                /* 确保按钮在视频之上 */
-            }
-
-            .start-video-btn {
-                position: absolute;
-                width: 55px;
-                height: 55px;
-                border-radius: 50%;
-
-                right: 220px;
-                bottom: 40px;
-                z-index: 1000;
-                /* 确保按钮在视频之上 */
+                z-index: 1000; /* 确保按钮在视频之上 */
             }
         }
 
