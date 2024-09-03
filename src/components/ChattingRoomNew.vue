@@ -12,6 +12,7 @@
                         <img src="../assets/picture/ChatforGroup.svg" alt="" />
                         <span>群聊</span>
                     </div>
+                    
                     <span>当前在线用户</span>
                     <div class="ungroup">
                         <div class="nousers" v-if="userList.length === 1"><span>没有其他用户</span></div>
