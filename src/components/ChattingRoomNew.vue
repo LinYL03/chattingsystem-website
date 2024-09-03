@@ -99,7 +99,7 @@
                                 @mouseup="sendAudioToServe">
                             <div class="audio-box" v-show="audioShow">正在录制...<img src="../assets/img/录音中.png"
                                     style="width: 70px;margin-top: 12px;"></div>
-                            <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo">
+                            <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo" v-show="!isGroup">
                             <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
                                 <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
