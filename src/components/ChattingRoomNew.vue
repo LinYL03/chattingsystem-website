@@ -713,7 +713,7 @@ export default {
             this.showVideoBox1 = true;
             // 将接收到的offer保存一下
             this.start_offer = offer;
-            this.startTalk();
+            // this.startTalk();
         },
         async startTalk() {
             this.showVideoBox = true;
