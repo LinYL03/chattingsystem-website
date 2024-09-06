@@ -7,7 +7,7 @@
                     <div class="stringBox" @click="userinfo">
                         <div class="username"><span>{{ user.username }}</span></div>
                         <div class="sign"><span>{{ this.sign }}</span></div>
-                    </div> 
+                    </div>
                 </div>
                 <div class="leftDown">
                     <span>聊天列表</span>
@@ -82,7 +82,6 @@
                                     </div>
                                 </div>
                             </li>
-                            
                         </ul>
                     </div>
                     <div class="sendMessage">
@@ -103,13 +102,17 @@
                             <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
                                 <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
-                                <!-- 发起者不显示接通按钮 -->
-                                <div><img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn"
-                                        v-show="videoAccepted "></div>
+                                <div class="video-box1" v-show="showVideoBox1" @mousedown="mousedown($event)" @click="toggleVideoView">
+                                    <video class="remoteVideo" id="remoteVideo" autoplay></video>
+                                </div>
                             </div>
-                            <div class="video-box1" v-show="showVideoBox1" @mousedown="mousedown($event)" id="Drag1"
-                                 @click="toggleVideoView">
-                                <video class="remoteVideo" id="remoteVideo" autoplay></video>
+                            <!-- 接收方出现的第一个窗口，接听或者挂断 -->
+                            <div class="video-box2" v-show="showVideoBox2">
+                                <!-- 这里想加一个来电头像 -->
+                                <!-- <div class="avatar"><img  alt=""></div> -->
+                                <span>视频来电</span>
+                                <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
+                                <div><img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn"></div>
                             </div>
                         </div>
                         <textarea cols="80" rows="5" ref="textarea" @keydown.enter="handlePress"></textarea>
@@ -151,11 +154,14 @@ export default {
             localStream: null, // 本地音频流
             remoteStream: null, // 远程音频流
             showVideoBox: false, // 展示自己视频的容器
+            // showVideoBox: true, // 展示自己视频的容器
             showVideoBox1: false, // 展示别人视频的容器
+            // showVideoBox1: true, // 展示别人视频的容器
+            showVideoBox2: false, // 接收方出现的第一个窗口
 
             currentView: 'local', // 'local' 或 'remote'，表示当前大窗口的视角
-            isInitiator: false, // 是否是发起者
-            videoAccepted: false, // 是否接通视频通话
+            // isInitiator: false, // 是否是发起者
+            // videoAccepted: false, // 是否接通视频通话
 
             // 容器可拖动
             DragEl: null,//拖动元素
@@ -230,9 +236,9 @@ export default {
             let dragWidth = this.DragEl.offsetWidth;
 
             // 小窗口元素
-            const smallWindowEl = document.getElementById('Drag1');
-            let smallWindowOffsetX = smallWindowEl.offsetLeft - this.DragEl.offsetLeft;
-            let smallWindowOffsetY = smallWindowEl.offsetTop - this.DragEl.offsetTop;
+            // const smallWindowEl = document.getElementById('Drag');
+            // let smallWindowOffsetX = smallWindowEl.offsetLeft - this.DragEl.offsetLeft;
+            // let smallWindowOffsetY = smallWindowEl.offsetTop - this.DragEl.offsetTop;
 
             // 添加鼠标移动事件
             document.onmousemove = (el) => {
@@ -262,8 +268,8 @@ export default {
                 this.DragEl.style.top = moveY + "px";
 
                 // 6. 移动小窗口（保持相对位置不变）
-                smallWindowEl.style.left = moveX + smallWindowOffsetX + "px";
-                smallWindowEl.style.top = moveY + smallWindowOffsetY + "px";
+                // smallWindowEl.style.left = moveX + smallWindowOffsetX + "px";
+                // smallWindowEl.style.top = moveY + smallWindowOffsetY + "px";
             };
 
             // 7. 鼠标抬起解除事件
@@ -593,7 +599,7 @@ export default {
             }
         },
         async startVideo() {
-            this.isInitiator = true; // 标识为发起者
+            // this.isInitiator = true; // 标识为发起者
             this.showVideoBox = true;
             this.$message.success("发起方：开始视频通话");
             try {
@@ -631,8 +637,8 @@ export default {
             // 接收方取消视频
             this.showVideoBox1 = false;
             this.showVideoBox = false;
-            this.isInitiator=false; // 是否是发起者
-            this.videoAccepted=false; // 是否接通视频通话
+            // this.isInitiator=false; // 是否是发起者
+            // this.videoAccepted=false; // 是否接通视频通话
 
             // 停止所有的媒体流轨道
             if (this.localStream) {
@@ -718,15 +724,18 @@ export default {
         // 处理Offer并返回Answer
         handleOffer(offer) {
             console.log("3 接收方：", offer.username, " 申请与你连接视频, 是否同意？");
-            this.showVideoBox1 = true;
+            console.log("offer: ", offer);
+            this.showVideoBox2 = true;
             // 将接收到的offer保存一下
             this.start_offer = offer;
             // this.startTalk();
         },
         async startTalk() {
-            this.videoAccepted = true; // 接通视频后隐藏按钮
-            this.videoAccepted1 = false;
-            this.isInitiator = false;
+            this.showVideoBox1 = true;
+            this.showVideoBox2 = false;
+            // this.videoAccepted = true; // 接通视频后隐藏按钮
+            // this.videoAccepted1 = false;
+            // this.isInitiator = false;
             this.showVideoBox = true;
             // 获取并显示本地视频
             try {
@@ -750,8 +759,6 @@ export default {
                 console.error("接收方：无法开始视频通话", error);
             }
         },
-
-        
     },
 };
 
@@ -1509,15 +1516,15 @@ export default {
         .icon .video-box {
             z-index: 999;
             display: flex;
-            /* 水平居中 */
-            justify-content: center;
-            /* 垂直居中 */
-            align-items: center;
+            // /* 水平居中 */
+            // justify-content: center;
+            // /* 垂直居中 */
+            // align-items: center;
 
             position: fixed; // 相对于页面定位
             width: 350px;
             height: 600px;
-            background: #fff;
+            background: #000000;
 
             left: 40%;
             top: 90px;
@@ -1533,42 +1540,76 @@ export default {
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
-
-                right: 150px;
                 bottom: 57px;
+                left: 50%; /* 将按钮的左边界移动到父组件的50%位置 */
+                transform: translateX(-50%); /* 向左平移按钮自身宽度的一半，实现居中 */
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
-                        .start-video-btn {
-                            position: absolute;
-                                width: 53px;
-                                height: 53px;
-                                border-radius: 50%;
-                                right: 149px;
-                                bottom: 110px;
-                            z-index: 1000;
-                            /* 确保按钮在视频之上 */
-                        }
-        }
-
-        .icon .video-box1 {
+            .video-box1 {
                 z-index: 999;
                 display: flex;
                 // justify-content: center;
                 // align-items: center;
-                position: fixed;
+                position: absolute;
                 width: 109px;
                 height: 156px;
                 background: #fff;
-                left: 55.8%;
-                top: 90px;
-                cursor: pointer;
-                    /* 鼠标悬停时显示手型 */
+                right: 0;
+                top: 0;
+                /* 鼠标悬停时显示手型 */
+                // cursor: pointer;
 
-            .remoteVideo {
-                flex-grow: 1; /* 使视频占据所有可用空间 */
+                .remoteVideo {
+                    flex-grow: 1; /* 使视频占据所有可用空间 */
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* 保持视频内容比例填充容器 */
+                }
+                .end-video-btn {
+                    position: absolute;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+
+                    right: 70px;
+                    bottom: 35px;
+                    z-index: 1000; /* 确保按钮在视频之上 */
+                }
+            }
+        }
+
+        .icon .video-box2 {
+            z-index: 999;
+            display: flex;
+            position: fixed;
+            width: 200px;
+            height: 100px;
+            background: var(--main-dark-color);
+            bottom: 10px;
+            right: 10px;
+            border-radius: 5px;
+            /* 鼠标悬停时显示手型 */
+            // cursor: pointer;
+
+            span {
+                padding-top: 5px;
+                text-align: center;
+                color: #fff;
+                // background: red;
                 width: 100%;
-                height: 100%;
-                object-fit: cover; /* 保持视频内容比例填充容器 */
+                font-weight: bold;
+                font-size: 20px;
+            }
+
+            .start-video-btn {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+
+                left: 35px;
+                bottom: 10px;
+                z-index: 1000; /* 确保按钮在视频之上 */
             }
             .end-video-btn {
                 position: absolute;
@@ -1576,8 +1617,8 @@ export default {
                 height: 50px;
                 border-radius: 50%;
 
-                right: 70px;
-                bottom: 35px;
+                right: 35px;
+                bottom: 10px;
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
         }
