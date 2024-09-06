@@ -99,11 +99,12 @@
                             <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
                                 <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
-                                <div><img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn"></div>
+                                <!-- 发起者不显示接通按钮 -->
+                                <div><img src="../assets/img/接电话.png" @click="startTalk" class="start-video-btn"
+                                        v-show="videoAccepted "></div>
                             </div>
                             <div class="video-box1" v-show="showVideoBox1" @mousedown="mousedown($event)" id="Drag1"
-                                @click="switchVideoViews">
-                                <!-- <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div> -->
+                                 @click="toggleVideoView">
                                 <video class="remoteVideo" id="remoteVideo" autoplay></video>
                             </div>
                         </div>
@@ -148,6 +149,8 @@ export default {
             showVideoBox1: false, // 展示别人视频的容器
 
             currentView: 'local', // 'local' 或 'remote'，表示当前大窗口的视角
+            isInitiator: false, // 是否是发起者
+            videoAccepted: false, // 是否接通视频通话
 
             // 容器可拖动
             DragEl: null,//拖动元素
@@ -583,7 +586,8 @@ export default {
                 };
             }
         },
-        async startVideo(){
+        async startVideo() {
+            this.isInitiator = true; // 标识为发起者
             this.showVideoBox = true;
             this.$message.success("发起方：开始视频通话");
             try {
@@ -621,6 +625,8 @@ export default {
             // 接收方取消视频
             this.showVideoBox1 = false;
             this.showVideoBox = false;
+            this.isInitiator=false; // 是否是发起者
+            this.videoAccepted=false; // 是否接通视频通话
 
             // 停止所有的媒体流轨道
             if (this.localStream) {
@@ -639,6 +645,19 @@ export default {
             }
 
             this.$message.success("视频通话结束");
+        },
+        toggleVideoView() {
+            // 交换视频流
+            const localVideoElement = document.getElementById("localVideo");
+            const remoteVideoElement = document.getElementById("remoteVideo");
+
+            // 保存当前的流
+            const tempStream = localVideoElement.srcObject;
+
+            // 交换流
+            localVideoElement.srcObject = remoteVideoElement.srcObject;
+            remoteVideoElement.srcObject = tempStream;
+            console.log("转换视角")
         },
         handleEndCall() {
             this.showVideoBox = false;
@@ -698,36 +717,33 @@ export default {
             this.startTalk();
         },
         async startTalk() {
+            this.videoAccepted = true; // 接通视频后隐藏按钮
+            this.videoAccepted1 = false;
+            this.isInitiator = false;
             this.showVideoBox = true;
+            // 获取并显示本地视频
             try {
-                // 获取本地音频流
                 this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-
-                // 在页面上显示本地视频
                 const localVideoElement = document.getElementById("localVideo");
                 localVideoElement.srcObject = this.localStream;
                 localVideoElement.play();
-                console.log("4 接收方：本地视频开始播放!!!");
 
+                // 确保 peer 连接
                 this.ensurePeerConnection();
-
-                // 添加本地音频轨道到RTCPeerConnection
-                // 让本地音频（即你麦克风捕获的声音）通过WebRTC的连接发送到远程用户
                 this.localStream.getTracks().forEach(track => {
                     this.pc.addTrack(track, this.localStream);
                 });
 
-                // console.log("type: ", this.start_offer.data.type);
+                // 设置远程描述并发送 answer
                 await this.pc.setRemoteDescription(new RTCSessionDescription({ type: "offer", sdp: this.start_offer.data.sdp }));
                 const answer = await this.pc.createAnswer();
                 await this.pc.setLocalDescription(answer);
                 this.$emit("sendAnswer", { type: "answer", sdp: answer.sdp }, this.isGroup);
-                // this.$message.success("正在等待对方接受通话请求...");
             } catch (error) {
-                console.error("无法开始视频通话:", error);
-                console.error("错误详情:", error.name, error.message);
+                console.error("接收方：无法开始视频通话", error);
             }
         },
+
         
     },
     
@@ -1399,7 +1415,7 @@ export default {
             height: 600px;
             background: #fff;
 
-            left: 777px;
+            left: 40%;
             top: 90px;
             // cursor: move; /* 鼠标悬停时显示移动光标 */
             .localVideo {
@@ -1414,17 +1430,17 @@ export default {
                 height: 50px;
                 border-radius: 50%;
 
-                right: 75px;
+                right: 150px;
                 bottom: 57px;
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
                         .start-video-btn {
                             position: absolute;
-                            width: 50px;
-                                height: 50px;
+                                width: 53px;
+                                height: 53px;
                                 border-radius: 50%;
-                                right: 232px;
-                                bottom: 57px;
+                                right: 149px;
+                                bottom: 110px;
                             z-index: 1000;
                             /* 确保按钮在视频之上 */
                         }
@@ -1433,13 +1449,13 @@ export default {
         .icon .video-box1 {
                 z-index: 999;
                 display: flex;
-                justify-content: center;
-                align-items: center;
+                // justify-content: center;
+                // align-items: center;
                 position: fixed;
                 width: 109px;
                 height: 156px;
                 background: #fff;
-                left: 1018px;
+                left: 55.8%;
                 top: 90px;
                 cursor: pointer;
                     /* 鼠标悬停时显示手型 */
@@ -1457,7 +1473,7 @@ export default {
                 border-radius: 50%;
 
                 right: 70px;
-                bottom: 40px;
+                bottom: 35px;
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
             
