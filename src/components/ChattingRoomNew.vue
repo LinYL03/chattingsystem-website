@@ -32,7 +32,7 @@
                     <div class="boxName" v-if="isGroup"><span>聊天室 ( {{ userListLength }} )</span></div>
                     <div class="boxName" v-else><span>{{ username }}</span></div>
                     <!-- <div class="function"><span>其他功能</span></div> -->
-                </div>
+                </div> 
                 <div class="rightDown">
                     <div class="chatArea">
                         <ul class="join" ref="joinUs">
