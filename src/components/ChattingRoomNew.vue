@@ -73,6 +73,7 @@
                                         <span @click="playAudioFromBase64( item1.msg )">语音 </span>
                                         <img :src="item1.avatar" class="avatar" />
                                     </div>
+                                    
                                 </div>
                                 <div v-if="item1.type === 6">
                                     <div class="message">
