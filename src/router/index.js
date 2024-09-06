@@ -14,8 +14,6 @@ import Account from '../components/UserInfo/Account.vue'
 
 import Chatting from '../components/Chatting.vue'
 
-import ChattingRoomNew from '../components/ChattingRoomNew.vue'
-// import ChatRoom from '../components/ChatRoom.vue'
 
 //解决vue重复点击路由报错
 const originalPush = Router.prototype.push
@@ -58,13 +56,13 @@ const routes = [
       requireAuth: true
     },
     children: [{
-      path: '/userinfo/1',
+      path: '/userinfo/my-info',
       component: MyInfo,
       meta: {
         requireAuth: true
       },
     }, {
-      path: '/userinfo/2',
+      path: '/userinfo/my-account',
       component: Account,
       meta: {
         requireAuth: true

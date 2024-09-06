@@ -4,7 +4,10 @@
             <div class="boxLeft">
                 <div class="leftTop">
                     <div class="avatar" @click="userinfo"><img :src="user.avatar" alt=""></div>
-                    <div class="username"><span>{{ user.username }}</span></div>
+                    <div class="stringBox" @click="userinfo">
+                        <div class="username"><span>{{ user.username }}</span></div>
+                        <div class="sign"><span>{{ this.sign }}</span></div>
+                    </div>
                 </div>
                 <div class="leftDown">
                     <span>聊天列表</span>
@@ -86,7 +89,7 @@
                             <img class="emoji" @click="emojiShow = !emojiShow" src="../assets/picture/emoji.svg" alt="">
                             <div class="emoji-box" tabindex="1" v-show="emojiShow" @blur="handleEmojiBlur">
                                 <span v-for="item in emojiList" :key="item.codes" @click="handleEmoji(item)">{{
-                                    item.char }}</span>
+                        item.char }}</span>
                             </div>
                             <img class="shoot" @click="handleCanvas" src="../assets/picture/shoot.svg" alt="">
                             <label for="file"><img class="file" src="../assets/picture/file.svg" alt=""></label>
@@ -95,7 +98,7 @@
                                 @mouseup="sendAudioToServe">
                             <div class="audio-box" v-show="audioShow">正在录制...<img src="../assets/img/录音中.png"
                                     style="width: 70px;margin-top: 12px;"></div>
-                            <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo">
+                            <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo" v-show="!isGroup">
                             <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
                                 <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
@@ -126,6 +129,7 @@ export default {
     props: {
         user: Object,
         userList: Array,
+        sign: String,
     },
     data() {
         return {
@@ -182,7 +186,8 @@ export default {
         console.log("pageWidth: ", this.pageWidth, "pageHeight: ", this.pageHeight);
         window.addEventListener('resize', this.handleResize);
         this.updateDimensions(); // 初始化时设置尺寸
-      
+        // console.log("this.sign :", this.sign);
+
     },
     updated() {
         // 聊天定位到底部
@@ -424,7 +429,7 @@ export default {
             }
         },
         userinfo() {
-            this.$router.push("/userinfo/1");
+            this.$router.push("/userinfo/my-info");
             console.log("跳转到用户信息界面");
         },
         // 长按语音按钮
@@ -713,8 +718,9 @@ export default {
         handleOffer(offer) {
             console.log("3 接收方：", offer.username, " 申请与你连接视频, 是否同意？");
             this.showVideoBox1 = true;
+            // 将接收到的offer保存一下
             this.start_offer = offer;
-            this.startTalk();
+            // this.startTalk();
         },
         async startTalk() {
             this.videoAccepted = true; // 接通视频后隐藏按钮
@@ -746,7 +752,6 @@ export default {
 
         
     },
-    
 };
 
 </script>
@@ -767,7 +772,7 @@ export default {
     --font-color: #ffffff;
 
     // 长度设置
-    --top-height: 59px;
+    --top-height: 60px;
     --page-width: 1494px;
     --page-height: 767px;
 }
@@ -809,30 +814,47 @@ export default {
 
 .leftTop {
     // background: #fff;
-    /* 垂直居中 */
+    // background: #000;
+    /* 从左到右、垂直居中 */
     display: flex;
     align-items: center;
     flex-direction: row;
+
     .avatar {
-        height: 42px;
-        width: 42px;
+        height: 50px;
+        width: 50px;
 
         cursor: pointer;
-        margin-left: calc((var(--top-height) - 42px) / 2);
-        margin-right: calc((var(--top-height) - 42px) / 2);
+        margin-left: calc((var(--top-height) - 50px) / 2);
+        margin-right: calc((var(--top-height) - 50px) / 2);
+
         // background: #000;
         img {
-            height: 42px;
-            width: 42px;
-            border-radius: 50%;
+            height: 50px;
+            width: 50px;
+            // border-radius: 50%;
+            border-radius: 3px;
         }
     }
+}
 
+.leftTop .stringBox {
+    cursor: pointer;
     .username {
+        margin-left: 2px;
         // background: #000;
         span {
+            font-weight: bold; /* 加粗用户名 */
             font-size: 20px;
             color: #fff;
+        }
+    }
+    .sign {
+        // background: #000;
+        span {
+            font-style: italic; /* 使用斜体 */
+            font-size: 12px;
+            color: #999;
         }
     }
 }
@@ -840,6 +862,7 @@ export default {
 .leftDown {
     >span {
         margin-left: 10px;
+        // margin-left: calc((var(--top-height) - 50px) / 2);
         font-size: 18px;
         color: var(--font-color);
     }
@@ -857,8 +880,9 @@ export default {
     display: flex;
     align-items: center;
     background: var(--secondary-dark-color);
-    border-radius: 10px;
+    border-radius: 5px;
     margin: 10px;
+    // margin: calc((var(--top-height) - 50px) / 2);
 
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -873,7 +897,8 @@ export default {
     }
 
     span {
-        font-size: 18px;
+        font-weight: bold; /* 加粗用户名 */
+        font-size: 20px;
         color: var(--font-color);
     }
 }
@@ -882,6 +907,7 @@ export default {
     // background: var(--secondary-dark-color);
     // border-radius: 10px;
     margin: 10px;
+    // margin: calc((var(--top-height) - 50px) / 2);
 
     display: flex;
     flex-direction: column;
@@ -890,31 +916,33 @@ export default {
         cursor: pointer;
         transition: background-color 0.3s ease;
         background: var(--secondary-dark-color);
-        height: var(--top-height);
+        height: calc(var(--top-height));
         /* 垂直居中 */
         display: flex;
         align-items: center;
         flex-direction: row;
         margin-bottom: 10px;
-        border-radius: 10px;
+        border-radius: 5px;
 
         // background: #fff;
 
         .avatar {
-            height: 42px;
-            width: 42px;
-            margin-left: calc((var(--top-height) - 42px) / 2);
-            margin-right: calc((var(--top-height) - 42px) / 2);
+            height: 45px;
+            width: 45px;
+            margin-left: calc((var(--top-height) - 45px) / 2);
+            margin-right: calc((var(--top-height) - 45px) / 2);
 
             img {
                 // background: #fff;
                 width: 100%;
                 height: 100%;
-                border-radius: 50%;
+                // border-radius: 50%;
+                border-radius: 3px;
             }
         }
 
         .username {
+            margin-left: 5px;
             // /* 设置为 Flexbox 布局 */
             // display: flex;
             // /* 水平居中 */
@@ -925,7 +953,8 @@ export default {
 
             // background: #fff;
             span {
-                font-size: 18px;
+                font-weight: bold; /* 加粗用户名 */
+                font-size: 20px;
                 color: var(--font-color);
             }
         }
@@ -947,6 +976,7 @@ export default {
 
         // margin-bottom: 10px;
         border-radius: 10px;
+
         span {
             color: #fff;
             font-size: 20px
@@ -968,6 +998,7 @@ export default {
     grid-template-rows: var(--top-height) 1fr;
     /* 子元素之间的间距 */
     gap: 10px;
+
     .rightDown {
         background: #31374575;
         border-radius: 12px;
@@ -977,21 +1008,20 @@ export default {
 .rightTop {
     // background-color: green;
     // background: var(--main-dark-color);
-
-    display: grid;
-    /* 子元素各占据一列，右侧的元素填充剩余的空间 */
-    grid-template-columns: 30% 1fr;
-    /* 子元素之间的间距 */
-    gap: 10px;
+    display: flex;
+    /* 垂直居中 */
+    align-items: center;
 
     /* 子元素之间的间距 */
     .boxName {
+        height: 100%;
         display: flex;
         /* 垂直居中 */
         align-items: center;
 
         // background: #999;
-        padding-left: 10px;
+        margin-left: 10px;
+
         span {
             color: var(--font-color);
             font-size: 23px;
@@ -1008,6 +1038,7 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
+
         // background: #999;
         span {
             font-size: 18px;
@@ -1022,11 +1053,12 @@ export default {
     grid-template-rows: 65% 1fr;
     /* 子元素之间的间距 */
     gap: 5px;
+
     .chatArea {
         // height: 100%;
         height: 324px;
         width: 100%;
-        background:#3137451c;
+        background: #3137451c;
         // background: #fff;
         border-radius: 12px;
 
@@ -1035,29 +1067,33 @@ export default {
             color: #ccc;
             overflow: auto;
             height: 100%;
-            box-sizing: border-box;
-            margin: 10px;
-            margin-bottom: 10px;
-            margin-top: 0;
-            padding: 10px 30px 0;
+            margin: 0;
+            // margin-bottom: 10px;
+            // margin-top: 0;
+            padding: 10px 15px 0;
             list-style: none;
+            box-sizing: border-box;
 
             // background: #000;
             li {
                 // background-color: #fff;
-                padding-bottom: 20px;
+                padding-bottom: 15px;
             }
         }
+
         .join::-webkit-scrollbar {
             display: none;
         }
+
         .my-message {
             display: flex;
             justify-content: flex-end;
+
             // background: #fff;
             .message {
                 display: flex;
                 position: relative;
+
                 &::after {
                     content: "";
                     right: 55px;
@@ -1067,14 +1103,19 @@ export default {
                     width: 20px;
                     height: 20px;
                     background-color: #91ED61;
-                    border-radius: 3px; /* 钝角 */
+                    border-radius: 3px;
+                    /* 钝角 */
                     clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
-                    transform: translateY(-50%) rotate(45deg); /* 旋转形成钝角 */
+                    transform: translateY(-50%) rotate(45deg);
+                    /* 旋转形成钝角 */
                 }
+
                 .avatar {
+                    border-radius: 3px;
                     width: 45px;
                     height: 45px;
                 }
+
                 span {
                     // overflow: auto;
                     box-sizing: border-box;
@@ -1091,32 +1132,38 @@ export default {
                     max-width: 500px;
                     word-wrap: break-word;
                     word-break: break-all;
-                    white-space: pre-wrap; /* 保留空白符和换行符 */
+                    white-space: pre-wrap;
+                    /* 保留空白符和换行符 */
                 }
             }
 
             .image {
                 display: flex;
                 position: relative;
+
                 .file {
                     max-width: 330px;
                     max-height: 170px;
                     margin-right: 12px;
                     cursor: pointer;
                 }
+
                 .avatar {
                     width: 45px;
                     height: 45px;
                 }
             }
         }
+
         .other-message {
             position: relative;
             display: flex;
             justify-content: flex-start;
+
             .message {
                 display: flex;
                 position: relative;
+
                 // background: #fff;
                 &::before {
                     content: "";
@@ -1127,15 +1174,19 @@ export default {
                     width: 20px;
                     height: 20px;
                     background-color: #fff;
-                    border-radius: 3px; /* 钝角 */
+                    border-radius: 3px;
+                    /* 钝角 */
                     clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
                     transform: translateY(-50%) rotate(-135deg);
                     border: 1px solid #ccc;
                 }
+
                 .avatar {
+                    border-radius: 3px;
                     width: 45px;
                     height: 45px;
                 }
+
                 .username {
                     // width: 100px;
                     position: absolute;
@@ -1143,10 +1194,13 @@ export default {
                     font-size: 16px;
                     color: #888;
                     // background: #000;
-                    display: inline-block;  /* 让 <p> 标签的宽度自适应内容 */
-                    text-align: left;       /* 文本左对齐 */
+                    display: inline-block;
+                    /* 让 <p> 标签的宽度自适应内容 */
+                    text-align: left;
+                    /* 文本左对齐 */
                     white-space: nowrap;
                 }
+
                 .content {
                     margin-top: 24px;
                     margin-left: 12px;
@@ -1164,13 +1218,15 @@ export default {
                     max-width: 500px;
                     word-wrap: break-word;
                     word-break: break-all;
-                    white-space: pre-wrap; /* 保留空白符和换行符 */
+                    white-space: pre-wrap;
+                    /* 保留空白符和换行符 */
                 }
             }
 
             .image {
                 display: flex;
                 position: relative;
+
                 .file {
                     max-width: 330px;
                     max-height: 170px;
@@ -1178,10 +1234,12 @@ export default {
                     margin-left: 11px;
                     cursor: pointer;
                 }
+
                 .avatar {
                     width: 45px;
                     height: 45px;
                 }
+
                 .username {
                     // width: 100px;
                     position: absolute;
@@ -1189,19 +1247,24 @@ export default {
                     font-size: 16px;
                     color: #888;
                     // background: #000;
-                    display: inline-block;  /* 让 <p> 标签的宽度自适应内容 */
-                    text-align: left;       /* 文本左对齐 */
+                    display: inline-block;
+                    /* 让 <p> 标签的宽度自适应内容 */
+                    text-align: left;
+                    /* 文本左对齐 */
                     white-space: nowrap;
                 }
             }
         }
+
         .my-audio-message {
             display: flex;
             justify-content: flex-end;
+
             // background: #fff;
             .message {
                 display: flex;
                 position: relative;
+
                 &::after {
                     content: "";
                     right: 55px;
@@ -1211,14 +1274,19 @@ export default {
                     width: 20px;
                     height: 20px;
                     background-color: #91ED61;
-                    border-radius: 3px; /* 钝角 */
+                    border-radius: 3px;
+                    /* 钝角 */
                     clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
-                    transform: translateY(-50%) rotate(45deg); /* 旋转形成钝角 */
+                    transform: translateY(-50%) rotate(45deg);
+                    /* 旋转形成钝角 */
                 }
+
                 .avatar {
+                    border-radius: 3px;
                     width: 45px;
                     height: 45px;
                 }
+
                 span {
                     cursor: pointer;
                     box-sizing: border-box;
@@ -1235,17 +1303,21 @@ export default {
                     max-width: 500px;
                     word-wrap: break-word;
                     word-break: break-all;
-                    white-space: pre-wrap; /* 保留空白符和换行符 */
+                    white-space: pre-wrap;
+                    /* 保留空白符和换行符 */
                 }
             }
         }
+
         .other-audio-message {
             position: relative;
             display: flex;
             justify-content: flex-start;
+
             .message {
                 display: flex;
                 position: relative;
+
                 // background: #fff;
                 &::before {
                     content: "";
@@ -1256,15 +1328,19 @@ export default {
                     width: 20px;
                     height: 20px;
                     background-color: #fff;
-                    border-radius: 3px; /* 钝角 */
+                    border-radius: 3px;
+                    /* 钝角 */
                     clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
                     transform: translateY(-50%) rotate(-135deg);
                     border: 1px solid #ccc;
                 }
+
                 .avatar {
+                    border-radius: 3px;
                     width: 45px;
                     height: 45px;
                 }
+
                 .username {
                     // width: 100px;
                     position: absolute;
@@ -1272,10 +1348,13 @@ export default {
                     font-size: 16px;
                     color: #888;
                     // background: #000;
-                    display: inline-block;  /* 让 <p> 标签的宽度自适应内容 */
-                    text-align: left;       /* 文本左对齐 */
+                    display: inline-block;
+                    /* 让 <p> 标签的宽度自适应内容 */
+                    text-align: left;
+                    /* 文本左对齐 */
                     white-space: nowrap;
                 }
+
                 .content {
                     cursor: pointer;
                     margin-top: 24px;
@@ -1294,15 +1373,18 @@ export default {
                     max-width: 500px;
                     word-wrap: break-word;
                     word-break: break-all;
-                    white-space: pre-wrap; /* 保留空白符和换行符 */
+                    white-space: pre-wrap;
+                    /* 保留空白符和换行符 */
                 }
             }
         }
     }
+
     .sendMessage {
         height: 100%;
         width: 100%;
-        background: var(--secondary-dark-color);
+        // background: var(--secondary-dark-color);
+        background: #3137451c;
         // background: yellow;
         border-radius: 0 0 12px 12px;
 
@@ -1312,7 +1394,8 @@ export default {
         display: flex;
         align-items: center;
         flex-direction: column;
-        padding-top: 8px;
+
+        // padding-top: 8px;
         .icon {
             width: 96%;
             height: 30px;
@@ -1322,6 +1405,7 @@ export default {
             display: flex;
             /* 垂直居中 */
             align-items: center;
+
             .emoji,
             .shoot,
             .file,
@@ -1329,27 +1413,34 @@ export default {
             .video {
                 padding: 0 6px;
                 cursor: pointer;
-                transition: filter 0.3s ease; /* 添加过渡效果 */
+                transition: filter 0.3s ease;
+                /* 添加过渡效果 */
                 // background: #bbb;
             }
+
             .emoji {
                 width: 28px;
                 padding-bottom: 2px;
             }
+
             .shoot {
                 width: 30px;
             }
+
             .file {
                 width: 26px;
                 padding-bottom: 0;
             }
+
             .audio {
                 width: 30px;
                 padding-bottom: 0;
             }
+
             .video {
                 width: 30px;
             }
+
             .emoji:hover,
             .shoot:hover,
             .file:hover,
@@ -1358,6 +1449,7 @@ export default {
                 filter: hue-rotate(180deg) saturate(500%) brightness(50%);
                 // filter: invert(30%) sepia(100%) saturate(700%) hue-rotate(200deg) brightness(90%) contrast(90%);
             }
+
             .emoji-box {
                 position: absolute;
                 display: flex;
@@ -1369,39 +1461,50 @@ export default {
                 background-color: #fff;
                 border: 1px solid #cccccc;
                 outline: none;
+
                 span {
                     padding: 7px;
                     cursor: pointer;
                 }
             }
+
             .audio-box {
-                    position: absolute;
-                    display: flex;
-                    align-items: center;
-                    width: 200px;
-                    height: 123px;
-                    border-radius: 20px;
-                    top: -140px;
-                    left: 58px;
-                    background: #91ED61;
-                    flex-direction: column;
-                    justify-content: center;
+                position: absolute;
+                display: flex;
+                align-items: center;
+                width: 200px;
+                height: 123px;
+                border-radius: 20px;
+                top: -140px;
+                left: 58px;
+                background: #91ED61;
+                flex-direction: column;
+                justify-content: center;
             }
+
             .audio-box::after {
-                position: absolute; /* 伪元素绝对定位 */
-                content: ""; /* 伪元素内容为空 */
-                display: block; /* 使伪元素作为块级元素显示 */
-                background-color: lightblue; /* 示例背景色 */
-                top: 108px; /* 放置在父元素的下方 */
+                position: absolute;
+                /* 伪元素绝对定位 */
+                content: "";
+                /* 伪元素内容为空 */
+                display: block;
+                /* 使伪元素作为块级元素显示 */
+                background-color: lightblue;
+                /* 示例背景色 */
+                top: 108px;
+                /* 放置在父元素的下方 */
 
                 width: 40px;
                 height: 40px;
                 background-color: #91ED61;
-                border-radius: 5px; /* 钝角 */
+                border-radius: 5px;
+                /* 钝角 */
                 clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
-                transform: translateY(-50%) rotate(135deg); /* 旋转形成钝角 */
+                transform: translateY(-50%) rotate(135deg);
+                /* 旋转形成钝角 */
             }
         }
+
         .icon .video-box {
             z-index: 999;
             display: flex;
@@ -1476,13 +1579,11 @@ export default {
                 bottom: 35px;
                 z-index: 1000; /* 确保按钮在视频之上 */
             }
-            
         }
-
 
         textarea {
             width: 94%;
-            height: 60px;
+            height: 54px;
             // border: none;
             resize: none;
             outline: none;
@@ -1490,16 +1591,23 @@ export default {
             margin-top: 5px;
             padding: 10px;
             background: #424758;
-            font-family: 'Microsoft YaHei', sans-serif; /* 设置字体为微软黑体 */
+            font-family: 'Microsoft YaHei', sans-serif;
+            /* 设置字体为微软黑体 */
             border-color: transparent;
             border-radius: 12px;
             color: #d6fcfe;
 
             transition: border-color 0.3s ease;
         }
+
         textarea::-webkit-scrollbar {
             display: none;
         }
+
+        textarea:focus {
+            border-color: #148AF6;
+        }
+
         textarea:hover {
             border-color: #148AF6;
         }
@@ -1508,7 +1616,7 @@ export default {
             position: absolute;
             width: 90px;
             height: 38px;
-            bottom: 5px;
+            bottom: 15px;
             right: 15px;
             font-size: 16px;
             border-radius: 9px;
@@ -1528,6 +1636,7 @@ export default {
             background: var(--selected-color);
             transition: background 0.3s ease;
         }
+
         .send-btn:hover {
             background: #0e5eaa;
         }
