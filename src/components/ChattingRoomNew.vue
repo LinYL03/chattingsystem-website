@@ -7,7 +7,7 @@
                     <div class="stringBox" @click="userinfo">
                         <div class="username"><span>{{ user.username }}</span></div>
                         <div class="sign"><span>{{ this.sign }}</span></div>
-                    </div>
+                    </div> 
                 </div>
                 <div class="leftDown">
                     <span>聊天列表</span>
