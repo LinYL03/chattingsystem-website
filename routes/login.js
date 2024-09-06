@@ -41,7 +41,7 @@ userLogin = (req, res) => {
             username: username,
             email: email
           }; // 要生成token的主题信息
-          let secretOrPrivateKey = "secretOrPrivateKey" // 这是加密的key（密钥） 
+          let secretOrPrivateKey = "secretOrPrivateKey" // 这是加密的key（密钥）
           let token = jwt.sign(content, secretOrPrivateKey, {
             expiresIn: 60 * 60 * 1 // 1小时过期
           });
