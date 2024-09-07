@@ -810,7 +810,7 @@ export default {
 
     display: grid;
     /* 子元素各占据一列，右侧的元素填充剩余的空间 */
-    grid-template-columns: 30% 1fr;
+    grid-template-columns: 30% minmax(200px, 1fr);
     /* 子元素之间的间距 */
     gap: 10px;
 
@@ -876,6 +876,7 @@ export default {
 }
 
 .leftDown {
+    // background: #fff;
     >span {
         margin-left: 10px;
         // margin-left: calc((var(--top-height) - 50px) / 2);
@@ -1698,4 +1699,159 @@ export default {
 
 }
 
+@media screen and (max-width: 1200px) {
+    .chatBox {
+        grid-template-columns: 80px minmax(400px, 1fr);
+    }
+    .leftDown {
+        >span {
+            display: none;
+        }
+    }
+    .leftTop {
+        .avatar:hover + .stringBox {
+            z-index: 999;
+            opacity: 1; /* 透明度变为1 */
+            visibility: visible; /* 使元素可见 */
+            transition: opacity 0.3s ease; /* 恢复到过渡效果 */
+        }
+    }
+    .leftTop .stringBox {
+        padding: 5px;
+        height: 50px;
+        min-width: 50px;
+        opacity: 0; /* 初始状态为透明 */
+        visibility: hidden; /* 初始状态不可见 */
+        // visibility: visible;
+        transition: opacity 0.3s ease, visibility 0s linear 0.3s; /* 过渡效果 */
+        background: var(--secondary-dark-color);
+        // left: -100px;
+        border-radius: 3px;
+        left: 80px;
+        /* 从左到右、垂直居中 */
+        display: flex;
+        position: absolute;
+        align-items: flex-start;
+        flex-direction: column;
+        // .username {background: #000;}
+        .sign {
+            padding-right: 10px;
+            // background: #000;
+            white-space: nowrap; /* 禁止文本换行 */
+            overflow: hidden; /* 超出部分隐藏 */
+            text-overflow: ellipsis; /* 添加省略号效果 */
+        }
+        &::before {
+            content: "";
+            left: -3px;
+            top: 20px;
+            transform: translateY(-50%);
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--secondary-dark-color);
+            border-radius: 3px;
+            /* 钝角 */
+            clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
+            transform: translateY(-50%) rotate(-135deg);
+            border: 1px solid var(--secondary-dark-color);;
+        }
+    }
+    .leftDown {
+        // background: #fff;
+        width: calc(var(--top-height) + 20px);
+        .group {
+            span {
+                display: none;
+            }
+            img {
+                // margin-left: 7.5px;
+                margin-left: calc((var(--top-height) - 35px) / 2);
+                width: 35px;
+                height: 35px;
+                // border-radius: 50%;
+                // background: #Fff;
+            }
+        }
+        .ungroup {
+            .userBox {
+                .avatar:hover + .username {
+                    z-index: 999;
+                    opacity: 1; /* 透明度变为1 */
+                    visibility: visible; /* 使元素可见 */
+                    transition: opacity 0.3s ease; /* 恢复到过渡效果 */
+                }
+
+                .username {
+                    margin-left: 5px;
+                    position: absolute;
+                    height: 50px;
+                    padding: 5px;
+                    padding-left: 15px;
+                    min-width: 100px;
+                    opacity: 0; /* 初始状态为透明 */
+                    visibility: hidden; /* 初始状态不可见 */
+                    // visibility: visible;
+                    transition: opacity 0.3s ease, visibility 0s linear 0.3s; /* 过渡效果 */
+                    background: var(--secondary-dark-color);
+                    border-radius: 3px;
+                    left: 90px;
+                    /* 从左到右、垂直居中 */
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-start;
+                    flex-direction: column;
+                    span {
+                        height: 100%;
+                        display: flex; /* 启用 Flexbox 布局 */
+                        align-items: center; /* 垂直居中 */
+                        // background: red;
+                        font-weight: bold; /* 加粗用户名 */
+                        font-size: 20px;
+                        color: var(--font-color);
+                    }
+                    &::before {
+                        content: "";
+                        left: -3px;
+                        top: 32px;
+                        transform: translateY(-50%);
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        background: var(--secondary-dark-color);
+                        border-radius: 3px;
+                        /* 钝角 */
+                        clip-path: polygon(50% 0%, 100% 0%, 100% 50%);
+                        transform: translateY(-50%) rotate(-135deg);
+                        border: 1px solid var(--secondary-dark-color);;
+                    }
+                }
+            }
+            .nousers span {
+                visibility: hidden; /* 隐藏原始文本，但保留元素的大小和布局 */
+                position: relative; /* 创建一个定位上下文 */
+            }
+            .nousers span::after {
+                content: '无'; /* 这里放置替换字符 */
+                visibility: visible; /* 显示替换文本 */
+                position: absolute;
+                left: 50%; /* 水平居中 */
+                top: 50%; /* 垂直居中 */
+                transform: translate(-50%, -50%); /* 通过平移使其完全居中 */
+            }
+        }
+    }
+    .rightDown .sendMessage {
+        textarea {
+            width: 90%;
+        }
+        .send-btn {
+            position: absolute;
+            width: 90px;
+            height: 38px;
+            bottom: 15px;
+            right: calc(5% - 10px);
+        }
+    }
+}
 </style>

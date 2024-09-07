@@ -367,4 +367,30 @@ export default {
     }
   }
 }
+
+@media screen and (min-width: 1200px) {
+  .chatBox {
+    position: relative;
+    width: 1200px;
+    height: 588px;
+    margin: 0 auto;
+    border: none;
+    // opacity: 0.9;
+    // background: #eee;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .chatBox {
+    min-width: 500px;
+    position: relative;
+    width: 90%;
+    height: 588px;
+    margin: 0 auto;
+    border: none;
+    // opacity: 0.9;
+    // background: #eee;
+  }
+}
+
 </style>
