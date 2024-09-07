@@ -32,7 +32,7 @@
                     <div class="boxName" v-if="isGroup"><span>聊天室 ( {{ userListLength }} )</span></div>
                     <div class="boxName" v-else><span>{{ username }}</span></div>
                     <!-- <div class="function"><span>其他功能</span></div> -->
-                </div> 
+                </div>
                 <div class="rightDown">
                     <div class="chatArea">
                         <ul class="join" ref="joinUs">
@@ -100,6 +100,7 @@
                                     style="width: 70px;margin-top: 12px;"></div>
                             <img src="../assets/picture/视频通话-填充.svg" class="video" @click="startVideo" v-show="!isGroup">
                             <div class="video-box" v-show="showVideoBox" @mousedown="mousedown($event)" id="Drag">
+                                <span class="word" v-show="showWord">等待对方接听...</span>
                                 <video class="localVideo" id="localVideo" autoplay muted></video>
                                 <div><img src="../assets/img/未接电话.png" @click="endVideo" class="end-video-btn"></div>
                                 <div class="video-box1" v-show="showVideoBox1" @mousedown="mousedown($event)" @click="toggleVideoView">
@@ -155,6 +156,7 @@ export default {
             remoteStream: null, // 远程音频流
             showVideoBox: false, // 展示自己视频的容器
             // showVideoBox: true, // 展示自己视频的容器
+            showWord: false,
             showVideoBox1: false, // 展示别人视频的容器
             // showVideoBox1: true, // 展示别人视频的容器
             showVideoBox2: false, // 接收方出现的第一个窗口
@@ -377,11 +379,11 @@ export default {
         },
         // 分类显示聊天窗口中的内容
         handleMessageBox(newValue) {
-            console.log("分类函数中处理消息时的信息:");
-            console.log("isGroup:", this.isGroup);
-            console.log("newValue.isAudio:", newValue.isAudio);
-            console.log("newValue.username:", newValue.username);
-            console.log("this.username:", this.user.username);
+            // console.log("分类函数中处理消息时的信息:");
+            // console.log("isGroup:", this.isGroup);
+            // console.log("newValue.isAudio:", newValue.isAudio);
+            // console.log("newValue.username:", newValue.username);
+            // console.log("this.username:", this.user.username);
             // 群组消息
             if (this.isGroup) {
                 if (newValue.username === this.user.username) {
@@ -402,7 +404,7 @@ export default {
                         this.oneContent = [];
                     }
                 }
-                console.log("分类函数中处理单人消息时的isAudio:", newValue.isAudio);
+                // console.log("分类函数中处理单人消息时的isAudio:", newValue.isAudio);
 
                 if (newValue.isAudio) this.oneContent.push({ ...newValue, type: 6 });
                 else this.oneContent.push({ ...newValue, type: 2 });
@@ -601,6 +603,7 @@ export default {
         async startVideo() {
             // this.isInitiator = true; // 标识为发起者
             this.showVideoBox = true;
+            this.showWord = true;
             this.$message.success("发起方：开始视频通话");
             try {
                 // 获取本地音频流
@@ -636,7 +639,9 @@ export default {
         endVideo() {
             // 接收方取消视频
             this.showVideoBox1 = false;
+            this.showWord = false;
             this.showVideoBox = false;
+            this.showVideoBox2 = false;
             // this.isInitiator=false; // 是否是发起者
             // this.videoAccepted=false; // 是否接通视频通话
 
@@ -673,7 +678,9 @@ export default {
         },
         handleEndCall() {
             this.showVideoBox = false;
+            this.showWord = false;
             this.showVideoBox1 = false;
+            this.showVideoBox2 = false;
             // 停止所有的媒体流轨道
             if (this.localStream) {
                 this.localStream.getTracks().forEach(track => {
@@ -692,6 +699,7 @@ export default {
         // 接收并处理对方的Answer
         async handleAnswer(answer) {
             this.showVideoBox1 = true;
+            this.showWord = false;
             if (!this.pc) {
                 // console.log("handleAnswer函数: ", answer);
                 // 创建RTCPeerConnection对象
@@ -1524,11 +1532,25 @@ export default {
             position: fixed; // 相对于页面定位
             width: 350px;
             height: 600px;
-            background: #000000;
+            background: #fff;
 
             left: 40%;
             top: 90px;
             // cursor: move; /* 鼠标悬停时显示移动光标 */
+            .word {
+                font-size: 32px;
+                font-weight: bold;
+                text-align: center;
+                position: absolute;
+                // background: #000;
+                // background: red;
+                width: 100%;
+                height: 50px;
+                top: 57px;
+                left: 50%; /* 将按钮的左边界移动到父组件的50%位置 */
+                transform: translateX(-50%); /* 向左平移按钮自身宽度的一半，实现居中 */
+                z-index: 1000; /* 确保按钮在视频之上 */
+            }
             .localVideo {
                 flex-grow: 1; /* 使视频占据所有可用空间 */
                 width: 100%;
@@ -1564,16 +1586,6 @@ export default {
                     width: 100%;
                     height: 100%;
                     object-fit: cover; /* 保持视频内容比例填充容器 */
-                }
-                .end-video-btn {
-                    position: absolute;
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-
-                    right: 70px;
-                    bottom: 35px;
-                    z-index: 1000; /* 确保按钮在视频之上 */
                 }
             }
         }
