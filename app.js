@@ -44,20 +44,6 @@ app.use('/node_modules', express.static(path.join(__dirname, '/node_modules')))
 
 //为所有源启用跨域
 app.use(cors());
-// app.use(cors({
-//   origin: '*', // 允许所有来源的请求
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // 允许的请求方法
-//   allowedHeaders: ['Content-Type', 'Authorization'] // 允许的请求头
-// }));
-//设置跨域访问
-// app.all('*', function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
-//   res.header("X-Powered-By", ' 3.2.1')
-//   res.header("Content-Type", "application/json;charset=utf-8");
-//   next();
-// });
 
 let localIp = 'localhost'; // 默认值
 // 获取局域网IP地址并设置为 BASE_URL
@@ -75,7 +61,6 @@ for (const iface in networkInterfaces) {
 global.BASE_URL = `http://${localIp}:4000`;
 
 // 定义全局域名变量
-// global.BASE_URL = 'http://8.129.128.30:4000'
 // global.BASE_URL = 'http://localhost:4000'
 
 app.use(router);
