@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import Room from "./ChattingRoomNew";
+import Room from "./ChattingRoom";
 
 // 引入socket.io-client
 import io from "socket.io-client";

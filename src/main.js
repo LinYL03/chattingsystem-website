@@ -15,9 +15,9 @@ let options = {
   fullscreenEl: false
 };
 //音乐播放器功能
-import vueAplayer from 'vue-aplayer'
+// import vueAplayer from 'vue-aplayer'
 
-Vue.use(vueAplayer)
+// Vue.use(vueAplayer)
 Vue.use(preview, options)
 Vue.use(preview)
 Vue.use(ElementUI)

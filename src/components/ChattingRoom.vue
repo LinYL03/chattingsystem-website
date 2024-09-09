@@ -172,10 +172,8 @@ export default {
             disY: 0, // 鼠标与元素左上角的垂直偏移
             pageWidth: window.innerWidth,
             pageHeight: window.innerHeight,
-
             // 双方视频
             start_offer: null,
-
         };
     },
     computed: {
@@ -398,12 +396,12 @@ export default {
                 this.messageContent = this.groupContent;
             } else {
                 // 单人消息
-                if (this.oneContent.length > 1) {
-                    let user = this.oneContent[this.oneContent.length - 1];
-                    if (newValue.username !== user.username) {
-                        this.oneContent = [];
-                    }
-                }
+                // if (this.oneContent.length > 1) {
+                //     let user = this.oneContent[this.oneContent.length - 1];
+                //     if (newValue.username !== user.username) {
+                //         this.oneContent = [];
+                //     }
+                // }
                 // console.log("分类函数中处理单人消息时的isAudio:", newValue.isAudio);
 
                 if (newValue.isAudio) this.oneContent.push({ ...newValue, type: 6 });
